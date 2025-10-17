@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/features/app/components/Navbar";
 import Footer from "@/features/app/components/Footer";
+import { Toaster } from "sonner";
 
 const baloo = Baloo_2({
   weight: "400",
@@ -32,6 +33,7 @@ export default function RootLayout({
           <Navbar />
           <main>{children}</main>
           <Footer/>
+          <Toaster/>
         </ThemeProvider>
       </body>
     </html>
