@@ -72,7 +72,7 @@ const Features = () => {
 
   return (
     <section
-      className="w-full md:w-2/3 md:mx-auto p-2 box-border"
+      className="w-full box-border scroll-mt-28 p-2"
       id="features"
       ref={featuresRef}
     >

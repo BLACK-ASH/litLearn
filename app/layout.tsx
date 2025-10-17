@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import {  Baloo_2 } from 'next/font/google'
+import { Baloo_2 } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import Navbar from "@/features/app/components/Navbar";
+import Footer from "@/features/app/components/Footer";
 
 const baloo = Baloo_2({
-  weight: '400',
-  subsets: ['latin'],
-})
- 
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Lit Learn",
@@ -21,16 +22,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${baloo.className} antialiased`}
-      >
+      <body className={`${baloo.className} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <Navbar />
+          <main>{children}</main>
+          <Footer/>
         </ThemeProvider>
       </body>
     </html>

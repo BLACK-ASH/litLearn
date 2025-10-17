@@ -53,26 +53,22 @@ const Testimonials = () => {
 
     gsap.registerPlugin(ScrollTrigger);
 
-    const testimonialTimeline = gsap.timeline({
+    const testimonialTimeline = gsap.timeline();
+
+    const testimonialCards = gsap.utils.toArray<HTMLDivElement>(".testimonial-card");
+ 
+    testimonialTimeline.from(testimonialCards, {
       scrollTrigger: {
-        trigger: ".testimonials-container",
+        trigger:testimonialCards[0],
         start: "top bottom",
-        end: "+=400",
         scrub: true,
       },
+      duration: 2,
+      opacity: 0,
+      delay: 0.5,
+      y: 100,
+      stagger: 0.2,
     });
-
-    testimonialTimeline
-      .from(".left-card", {
-        stagger: 0.2,
-        x: -100,
-        opacity: 0,
-      })
-      .from(".right-card", {
-        stagger: 0.2,
-        x: 100,
-        opacity: 0,
-      });
 
     return () => {
       gsap.killTweensOf(".testimonial-title");
@@ -81,17 +77,20 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section id="testimonials" className="w-full overflow-hidden md:w-2/3 md:mx-auto p-2 box-border">
+    <section id="testimonials" className="w-full box-border scroll-mt-28 p-2">
       <h2 className="testimonial-title scroll-m-20 text-center my-4 pb-2 text-3xl md:text-5xl font-semibold tracking-tight first:mt-0">
-        Testimonials
+       What Our Users Say
       </h2>
-      <div className="testimonials-container flex flex-col gap-2">
+       <h4 className="scroll-m-20 text-center my-4 pb-2 md:text-xl font-semibold tracking-tight first:mt-0">
+       Hear from students, teachers, and aspirants who’ve benefited from our resources.
+      </h4>
+      <div className="flex flex-col gap-2">
         {dummyTestimonials.map((testimonial: TestimonialsProps, i) => (
           <Card
             key={testimonial.id}
             className={cn(
-              "w-3/4 sm:w-1/3 shadow-md shadow-primary/20 dark:shadow-primary/50 ",
-              i % 2 === 0 ? "self-start left-card" : "self-end right-card",
+              "w-3/4 sm:w-1/3 shadow-md shadow-primary/20 dark:shadow-primary/50 testimonial-card",
+              i % 2 === 0 ? "self-start" : "self-end",
             )}
           >
             <CardHeader>
