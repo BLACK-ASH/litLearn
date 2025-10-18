@@ -1,6 +1,7 @@
 
 import { redirect } from "next/navigation";
 import { authClient } from "./auth-client"
+import { toast } from "sonner";
 
 const emailAndPasswordSignIn = async (email: string, password: string) => {
 
@@ -27,11 +28,12 @@ const emailAndPasswordSignIn = async (email: string, password: string) => {
         onSuccess: (ctx) => {
             //redirect to the dashboard or sign in page
             
+            toast.success("Login successful")
             redirect("/")
         },
         onError: (ctx) => {
             // display the error message
-            alert(ctx.error.message);
+            toast.error(ctx.error.message);
         },
     })
 }

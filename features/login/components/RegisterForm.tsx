@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -14,16 +13,17 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { Controller, useForm } from "react-hook-form";
+
 import { emailAndPasswordSignUp, signUpWithGoogle } from "@/lib/Auth/sign-up";
 import { Separator } from "@/components/ui/separator";
 
-const formSchema = z.object({
+const registerFormSchema = z.object({
   name: z.string().min(2).max(20),
   email: z.email(),
   password: z
@@ -33,11 +33,11 @@ const formSchema = z.object({
   confirmPassword: z.string(),
 });
 
-type FormData = z.infer<typeof formSchema>;
+type registerFormSchemaData = z.infer<typeof registerFormSchema>;
 
 export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<registerFormSchemaData>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       name: "",
       email: "",
@@ -46,13 +46,11 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   });
 
-  async function onSubmit(data: FormData) {
+  async function onSubmit(data: registerFormSchemaData) {
     if (data.password !== data.confirmPassword) {
       form.setError("confirmPassword", { message: "Passwords do not match" });
       return;
     }
-    console.log(data);
-
     await emailAndPasswordSignUp(data.email, data.password, data.name);
   }
 

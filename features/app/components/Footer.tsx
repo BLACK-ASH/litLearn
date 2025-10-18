@@ -6,7 +6,7 @@ const Footer = () => {
       <p className="font-bold text-pretty text-primary text-xl md:text-2xl">
         LitLearn
       </p>
-      <div className="hover:underline">
+      <div className="hover:underline text-sm md:text-base">
         <a
           target="_blank"
           rel="noreferrer"

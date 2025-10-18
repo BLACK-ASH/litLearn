@@ -31,7 +31,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <main>{children}</main>
+          <main className="mt-12">{children}</main>
           <Footer/>
           <Toaster/>
         </ThemeProvider>

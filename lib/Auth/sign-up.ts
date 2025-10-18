@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { authClient } from "./auth-client";
+import { toast } from "sonner";
 
 const emailAndPasswordSignUp = async (email: string, password: string, name: string) => {
 
@@ -15,11 +16,12 @@ const emailAndPasswordSignUp = async (email: string, password: string, name: str
         },
         onSuccess: (ctx) => {
             //redirect to the dashboard or sign in page
+            toast.success("Registration successful")
             redirect("/")
         },
         onError: (ctx) => {
             // display the error message
-            alert(ctx.error.message);
+            toast.error(ctx.error.message);
         },
     });
 
@@ -29,9 +31,7 @@ const emailAndPasswordSignUp = async (email: string, password: string, name: str
 const signUpWithGoogle = async () => {
     const data = await authClient.signIn.social({
         provider: "google",
-    });
-    console.log(data);
-    
+    });  
 }
 
 export { emailAndPasswordSignUp , signUpWithGoogle };
