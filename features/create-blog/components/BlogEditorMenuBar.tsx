@@ -33,7 +33,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-
+import { Separator } from "@/components/ui/separator";
 
 export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
   // Read the current editor's state, and re-render the component when it changes
@@ -94,15 +94,24 @@ export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
     { label: "Heading 6", level: 6 },
   ];
 
-  const colors = [
-    { label: "Default", value: "inherit" },
-    { label: "Red", value: "red" },
-    { label: "Green", value: "green" },
-    { label: "Blue", value: "blue" },
-    { label: "Yellow", value: "yellow" },
-    { label: "Orange", value: "orange" },
-    { label: "Purple", value: "purple" },
-  ];
+const colors = [
+  { label: "Default", value: "inherit" },
+  { label: "Coral", value: "#FF6B6B" },        // modern red
+  { label: "Amber", value: "#FFB020" },        // warm yellow-orange
+  { label: "Mint", value: "#A7F3D0" },         // soft mint green
+  { label: "Seafoam", value: "#2DD4BF" },      // teal-green
+  { label: "Sky", value: "#38BDF8" },          // calm sky blue
+  { label: "Azure", value: "#007AFF" },        // iOS bright blue
+  { label: "Indigo", value: "#6366F1" },       // classic linear blue-violet
+  { label: "Violet", value: "#8B5CF6" },       // elegant purple
+  { label: "Magenta", value: "#FF4BCE" },      // pop pink
+  { label: "Rose", value: "#FB7185" },         // muted rose tone
+  { label: "Lime", value: "#BEF264" },         // energetic neon lime
+  { label: "Sand", value: "#F5E6CC" },         // soft neutral beige
+  { label: "Slate", value: "#64748B" },        // balanced gray-blue
+  { label: "Midnight", value: "#0F172A" },     // deep dark base
+];
+
 
   const helperFuntionForBasicTextStyle = (val: string) => {
     switch (val) {
@@ -275,11 +284,14 @@ export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-48 flex flex-wrap gap-2 p-2">
+          Text Color
+          <Separator />
           {colors.map((color) => (
             <Button
+              size={"icon-sm"}
               key={color.label}
               onClick={() => editor.chain().focus().setColor(color.value).run()}
-              className="w-6 h-6 rounded-full"
+              className="size-6 rounded-full"
               style={{ backgroundColor: color.value }}
             />
           ))}
@@ -294,9 +306,12 @@ export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-48 flex flex-wrap gap-2 p-2">
+          Text Highlight
+          <Separator />
           {colors.map((color) => (
             <Button
               key={color.label}
+              size={"icon-sm"}
               onClick={() =>
                 editor
                   .chain()
@@ -304,7 +319,7 @@ export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
                   .toggleHighlight({ color: color.value })
                   .run()
               }
-              className="w-6 h-6 rounded-full"
+              className="size-6 rounded-full"
               style={{ backgroundColor: color.value }}
             />
           ))}
@@ -336,7 +351,7 @@ export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
         <Redo2 />
       </Button>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <Button
           type={"button"}
           variant={"outline"}

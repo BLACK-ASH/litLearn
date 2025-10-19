@@ -1,9 +1,9 @@
 "use client";
+
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
 import {
   Field,
   FieldError,
@@ -17,7 +17,28 @@ import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/Auth/auth-client";
 import { createBlog } from "@/features/create-blog/actions/create";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2, X } from "lucide-react";
 
+// category options related to literature
+const categoryOptions = [
+  { value: "General", label: "General" },
+  { value: "Technology", label: "Technology" },
+  { value: "Business", label: "Business" },
+  { value: "Culture", label: "Culture" },
+  { value: "Entertainment", label: "Entertainment" },
+  { value: "Health", label: "Health" },
+  { value: "Politics", label: "Politics" },
+  { value: "Science", label: "Science" },
+  { value: "Sports", label: "Sports" },
+];
 
 const blogFormSchema = z.object({
   title: z.string().min(2).max(100),
@@ -38,9 +59,9 @@ export default function BlogForm() {
   const router = useRouter();
   const {
     data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
+    isPending,
+    error,
+    refetch,
   } = authClient.useSession();
 
   const form = useForm({
@@ -55,6 +76,8 @@ export default function BlogForm() {
       category: "General",
     },
   });
+
+  const [tagInput, setTagInput] = useState("");
 
   const onSubmit = async (data: BlogFormData) => {
     const result = await createBlog(data);
@@ -81,6 +104,7 @@ export default function BlogForm() {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <FieldGroup>
+        {/* Title */}
         <Controller
           name="title"
           control={form.control}
@@ -93,25 +117,14 @@ export default function BlogForm() {
           )}
         />
 
-        <Controller
-          name="coverImage"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="coverImage">Cover Image</FieldLabel>
-              <Input {...field} id="coverImage" placeholder="Cover image URL" />
-              {fieldState.error && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
+        {/* Description */}
         <Controller
           name="description"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="description">Description</FieldLabel>
-              <Input
+              <Textarea
                 {...field}
                 id="description"
                 placeholder="Short summary..."
@@ -121,6 +134,104 @@ export default function BlogForm() {
           )}
         />
 
+        <div className="flex items-center gap-2 justify-between">
+          {/* Cover Image */}
+          <Controller
+            name="coverImage"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="coverImage">Cover Image</FieldLabel>
+                <Input
+                  {...field}
+                  id="coverImage"
+                  placeholder="Cover image URL"
+                />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+
+          {/* Category */}
+          <Controller
+            name="category"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="category">Category</FieldLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder={field.value} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categoryOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        </div>
+
+        {/* Tags Input */}
+        <Controller
+          name="tags"
+          control={form.control}
+          render={({ field }) => (
+            <Field>
+              <FieldLabel>Tags</FieldLabel>
+              <div className="flex flex-wrap items-center gap-2 border rounded-md px-3 py-2">
+                {field.value?.map((tag, idx) => (
+                  <span
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                    key={idx}
+                    className="bg-primary/10 text-primary text-xs font-medium px-2 py-1 rounded-md flex items-center gap-1"
+                  >
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        field.onChange(field.value?.filter((t) => t !== tag))
+                      }
+                      className="hover:text-red-500"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+                <input
+                  type="text"
+                  className="flex-1 outline-none bg-transparent text-sm"
+                  placeholder="Add a tag and press Enter"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (
+                      (e.key === "Enter" || e.key === ",") &&
+                      tagInput.trim()
+                    ) {
+                      e.preventDefault();
+                      if (!field.value?.includes(tagInput.trim())) {
+                        field.onChange([...field.value as string[], tagInput.trim()]);
+                      }
+                      setTagInput("");
+                    }
+                  }}
+                />
+              </div>
+            </Field>
+          )}
+        />
+
+        {/* Content */}
         <Controller
           name="content"
           control={form.control}
@@ -128,16 +239,14 @@ export default function BlogForm() {
             <Field id="content" data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="content">Content</FieldLabel>
               <BlogEditor content={field.value} onChange={field.onChange} />
-              {/* <SimpleEditor /> */}
-
               {fieldState.error && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
       </FieldGroup>
 
-      <Button type="submit" className="mt-4">
-        Publish Blog
+      <Button disabled={!form.formState.isValid} type="submit" className="mt-4">
+       {!form.formState.isValid ? <span className="flex items-center"><Loader2 className="mr-2 animate-spin" />Publishing Blog</span> : "Publish Blog"}
       </Button>
     </form>
   );

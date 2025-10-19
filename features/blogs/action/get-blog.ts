@@ -1,15 +1,45 @@
 "use server"
 
 import connectDB from "@/lib/Database/connection";
-import Blog from "@/lib/Database/Models/blog.model";
+import Blog, { type BlogData } from "@/lib/Database/Models/blog.model";
+import { cache } from "react";
 
- export const getBlogBySlug = async (slug: string) => {
+const increaseViews = async (slug: string): Promise<boolean> => {
     try {
         await connectDB();
-        const blog = await Blog.findOne({ slug });
+        const blog: BlogData | null = await Blog.findOne({ slug });
+        if (!blog) return false;
+        blog.views++;
+        await blog.save();
+        return true
+    } catch (error) {
+        console.error("Error fetching blog by slug:", error);
+        return false
+    }
+}
+
+export const getAllBlogs =cache( async (): Promise<BlogData[]> => {
+    try {
+        await connectDB();
+        const blogs = (await Blog.find().lean()) as unknown as BlogData[];
+        if (!blogs) return [];
+        return blogs;
+    } catch (error) {
+        console.error("Error fetching all blogs:", error);
+        return [];
+    }
+})
+
+
+export const getBlogBySlug =cache( async (slug: string): Promise<BlogData | null> => {
+    try {
+        await connectDB();
+        await increaseViews(slug);
+        const blog = await Blog.findOne({ slug }).lean() as BlogData | null;
+        if (!blog) return null;
         return blog;
     } catch (error) {
         console.error("Error fetching blog by slug:", error);
         return null;
     }
-}
+})

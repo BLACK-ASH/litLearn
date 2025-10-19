@@ -1,5 +1,9 @@
 import BlogForm from "@/features/create-blog/components/BlogForm";
 
+export const metadata = {
+  title: "Create Blog",
+  description: "Create Your Own Blog",
+}
 const page = () => {
 
 

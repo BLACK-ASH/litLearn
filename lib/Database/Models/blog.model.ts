@@ -1,8 +1,9 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 import slugify from "slugify";
 // 1️⃣ Define a TypeScript interface for the Blog
-export interface IBlog extends Document {
+export interface BlogData extends Document {
   title: string;
+  description: string;
   slug: string;
   content: string;
   coverImage?: string;
@@ -13,14 +14,21 @@ export interface IBlog extends Document {
   tags?: string[];
   category?: string;
   views: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // 2️⃣ Create the Schema
-const BlogSchema = new Schema<IBlog>(
+const BlogSchema = new Schema<BlogData>(
   {
     title: {
       type: String,
       required: [true, "Title is required"],
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: [true, "Description is required"],
       trim: true,
     },
     slug: {
@@ -83,7 +91,7 @@ BlogSchema.pre("save", async function (next) {
 });
 
 // 4️⃣ Create or reuse the model
-const Blog: Model<IBlog> =
-  mongoose.models.Blog || mongoose.model<IBlog>("Blog", BlogSchema);
+const Blog: Model<BlogData> =
+  mongoose.models.Blog || mongoose.model<BlogData>("Blog", BlogSchema);
 
 export default Blog;

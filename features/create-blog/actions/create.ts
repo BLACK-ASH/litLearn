@@ -5,6 +5,7 @@ import connectDB from "@/lib/Database/connection";
 import Blog from "@/lib/Database/Models/blog.model";
 import mongoose from "mongoose";
 import { sanitizeHTML } from "./sanitizeHtml";
+import { revalidatePath } from "next/cache";
 
 interface Result {
   status: "success" | "error";
@@ -20,18 +21,22 @@ export const createBlog = async (data: BlogFormData): Promise<Result | undefined
 
     // 🧼 Sanitize inputs before saving to DB
     const sanitizedTitle = await sanitizeHTML(data.title);
+    const sanitizedDescription = await sanitizeHTML(data.description);
     const sanitizedContent = await sanitizeHTML(data.content);
-    const sanitizedCategory = await sanitizeHTML(data.category || "");
+    const sanitizedCategory = await sanitizeHTML(data.category || "General");
     const sanitizedTags = data.tags?.map(tag => tag.trim().toLowerCase()) || [];
 
     const blog = await Blog.create({
       title: sanitizedTitle,
       content: sanitizedContent,
+      description: sanitizedDescription,
       coverImage: data.coverImage,
       author: { name: data.author.name, id },
       tags: sanitizedTags,
       category: sanitizedCategory,
     });
+
+    revalidatePath("/blogs");
 
     return {
       status: "success",
