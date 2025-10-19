@@ -69,7 +69,7 @@ export default function BlogForm() {
     defaultValues: {
       title: "",
       description: "",
-      content: "Start typing...",
+      content: "",
       coverImage: "",
       author: { name: "", id: "" },
       tags: [],
@@ -245,8 +245,8 @@ export default function BlogForm() {
         />
       </FieldGroup>
 
-      <Button disabled={!form.formState.isValid} type="submit" className="mt-4">
-       {!form.formState.isValid ? <span className="flex items-center"><Loader2 className="mr-2 animate-spin" />Publishing Blog</span> : "Publish Blog"}
+      <Button disabled={form.formState.isSubmitting} type="submit" className="mt-4">
+       {form.formState.isSubmitting ? <span className="flex items-center"><Loader2 className="mr-2 animate-spin" />Publishing Blog</span> : "Publish Blog"}
       </Button>
     </form>
   );

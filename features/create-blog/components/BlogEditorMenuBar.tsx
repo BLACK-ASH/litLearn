@@ -11,12 +11,17 @@ import {
   Bold,
   ChevronDown,
   Highlighter,
+  ImagePlus,
   Italic,
+  Link2Icon,
+  Link2OffIcon,
   List,
   ListOrdered,
   Redo2,
   RemoveFormatting,
   Strikethrough,
+  Subscript as SubscriptIcon,
+  Superscript as SuperscriptIcon,
   Type,
   UnderlineIcon,
   Undo2,
@@ -34,8 +39,23 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { Toggle } from "@/components/ui/toggle";
 
 export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
+  const [open, setOpen] = useState(false);
+  const [url, setUrl] = useState("");
+  const [dimension, setDimension] = useState({ height: 400, width: 500 });
   // Read the current editor's state, and re-render the component when it changes
   const editorState = useEditorState({
     editor,
@@ -60,7 +80,14 @@ export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
         isBulletList: ctx.editor.isActive("bulletList") ?? false,
         isOrderedList: ctx.editor.isActive("orderedList") ?? false,
         isCodeBlock: ctx.editor.isActive("codeBlock") ?? false,
+        canToggleCodeBlock:
+          ctx.editor.can().chain().toggleCodeBlock().run() ?? false,
+        canToggleBulletList:
+          ctx.editor.can().chain().toggleBulletList().run() ?? false,
+        canToggleOrderedList:
+          ctx.editor.can().chain().toggleOrderedList().run() ?? false,
         isBlockquote: ctx.editor.isActive("blockquote") ?? false,
+        isLink: ctx.editor.isActive("link") ?? false,
         canUndo: ctx.editor.can().chain().undo().run() ?? false,
         canRedo: ctx.editor.can().chain().redo().run() ?? false,
       };
@@ -94,24 +121,23 @@ export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
     { label: "Heading 6", level: 6 },
   ];
 
-const colors = [
-  { label: "Default", value: "inherit" },
-  { label: "Coral", value: "#FF6B6B" },        // modern red
-  { label: "Amber", value: "#FFB020" },        // warm yellow-orange
-  { label: "Mint", value: "#A7F3D0" },         // soft mint green
-  { label: "Seafoam", value: "#2DD4BF" },      // teal-green
-  { label: "Sky", value: "#38BDF8" },          // calm sky blue
-  { label: "Azure", value: "#007AFF" },        // iOS bright blue
-  { label: "Indigo", value: "#6366F1" },       // classic linear blue-violet
-  { label: "Violet", value: "#8B5CF6" },       // elegant purple
-  { label: "Magenta", value: "#FF4BCE" },      // pop pink
-  { label: "Rose", value: "#FB7185" },         // muted rose tone
-  { label: "Lime", value: "#BEF264" },         // energetic neon lime
-  { label: "Sand", value: "#F5E6CC" },         // soft neutral beige
-  { label: "Slate", value: "#64748B" },        // balanced gray-blue
-  { label: "Midnight", value: "#0F172A" },     // deep dark base
-];
-
+  const colors = [
+    { label: "Default", value: "inherit" },
+    { label: "Coral", value: "#FF6B6B" }, // modern red
+    { label: "Amber", value: "#FFB020" }, // warm yellow-orange
+    { label: "Mint", value: "#A7F3D0" }, // soft mint green
+    { label: "Seafoam", value: "#2DD4BF" }, // teal-green
+    { label: "Sky", value: "#38BDF8" }, // calm sky blue
+    { label: "Azure", value: "#007AFF" }, // iOS bright blue
+    { label: "Indigo", value: "#6366F1" }, // classic linear blue-violet
+    { label: "Violet", value: "#8B5CF6" }, // elegant purple
+    { label: "Magenta", value: "#FF4BCE" }, // pop pink
+    { label: "Rose", value: "#FB7185" }, // muted rose tone
+    { label: "Lime", value: "#BEF264" }, // energetic neon lime
+    { label: "Sand", value: "#F5E6CC" }, // soft neutral beige
+    { label: "Slate", value: "#64748B" }, // balanced gray-blue
+    { label: "Midnight", value: "#0F172A" }, // deep dark base
+  ];
 
   const helperFuntionForBasicTextStyle = (val: string) => {
     switch (val) {
@@ -164,6 +190,22 @@ const colors = [
     }
   };
 
+  const handleAddLink = () => {
+    const finalUrl =
+      url.startsWith("http://") || url.startsWith("https://")
+        ? url
+        : `https://${url}`;
+
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .setLink({ href: finalUrl })
+      .run();
+    setOpen(false);
+    setUrl("");
+  };
+
   return (
     <div className="flex flex-wrap items-center gap-2 border rounded-md bg-muted/40 p-2">
       {/* Headings */}
@@ -192,7 +234,6 @@ const colors = [
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-
       {/* Font Family */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -214,7 +255,6 @@ const colors = [
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-
       {/* Basic Text Styles */}
       <ToggleGroup
         type="multiple"
@@ -238,6 +278,24 @@ const colors = [
         </ToggleGroupItem>
       </ToggleGroup>
 
+      {/* Subscript */}
+      <Toggle
+        pressed={editor.isActive("subscript")}
+        onPressedChange={() => editor.chain().focus().toggleSubscript().run()}
+        className={editor.isActive("subscript") ? "is-active" : ""}
+      >
+        <SubscriptIcon />
+      </Toggle>
+
+      {/* Superscript */}
+      <Toggle
+        pressed={editor.isActive("superscript")}
+        onPressedChange={() => editor.chain().focus().toggleSuperscript().run()}
+        className={editor.isActive("superscript") ? "is-active" : ""}
+      >
+        <SuperscriptIcon />
+      </Toggle>
+
       {/* Lists */}
       <ToggleGroup
         type="single"
@@ -253,7 +311,6 @@ const colors = [
           <ListOrdered />
         </ToggleGroupItem>
       </ToggleGroup>
-
       {/* Alignment */}
       <ToggleGroup
         variant="outline"
@@ -275,7 +332,6 @@ const colors = [
           <AlignJustify />
         </ToggleGroupItem>
       </ToggleGroup>
-
       {/* Text Color */}
       <Popover>
         <PopoverTrigger asChild>
@@ -297,11 +353,10 @@ const colors = [
           ))}
         </PopoverContent>
       </Popover>
-
       {/* Highlight Color */}
       <Popover>
         <PopoverTrigger asChild>
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="ghost">
             <Highlighter />
           </Button>
         </PopoverTrigger>
@@ -325,14 +380,130 @@ const colors = [
           ))}
         </PopoverContent>
       </Popover>
+      {/* Add Image */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="ghost">
+            <ImagePlus />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Image Url</DialogTitle>
+          </DialogHeader>
+          <Label htmlFor="image-url">Image Url</Label>
+          <Input
+            type="text"
+            id="image-url"
+            placeholder="Image Url"
+            onChange={(e) => {
+              setUrl(e.target.value);
+            }}
+          />
+          <div className="flex items-center gap-2">
+            <div className="space-y-2 my-2">
+              <Label htmlFor="image-height">Image Height</Label>
+              <Input
+                type="number"
+                id="image-height"
+                value={dimension.height}
+                placeholder="Image Height"
+                onChange={(e) => {
+                  setDimension({
+                    ...dimension,
+                    height: Number(e.target.value),
+                  });
+                }}
+              />
+            </div>
+            <div className="space-y-2 my-2">
+              <Label htmlFor="image-width">Image Width</Label>
+              <Input
+                type="number"
+                id="image-width"
+                value={dimension.width}
+                placeholder="Image Width"
+                onChange={(e) => {
+                  setDimension({ ...dimension, width: Number(e.target.value) });
+                }}
+              />
+            </div>
+          </div>
+
+          <Button
+            onClick={() => {
+              if (!url) {
+                toast.error("Please enter image url");
+                return;
+              }
+              editor
+                .chain()
+                .focus()
+                .setImage({
+                  src: url,
+                  height: dimension.height,
+                  width: dimension.width,
+                })
+                .run();
+              setUrl("");
+            }}
+          >
+            Add
+          </Button>
+          {/** biome-ignore lint/performance/noImgElement: <explanation> */}
+          {url ? (
+            <img
+              src={url}
+              height={dimension.height}
+              width={dimension.width}
+              alt="preview"
+            />
+          ) : (
+            <p>Image Preview</p>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Link */}
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+          >
+            <Link2Icon className="w-4 h-4" />
+          </Button>
+        </PopoverTrigger>
+
+        <PopoverContent className="w-64 p-3 space-y-2" align="start">
+          <Input
+            placeholder="Enter or paste link..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleAddLink()}
+          />
+
+          <Button size="sm" onClick={handleAddLink}>
+            Apply
+          </Button>
+        </PopoverContent>
+      </Popover>
       <Button
         type={"button"}
-        variant={"outline"}
+        variant={"ghost"}
+        onClick={() => editor.chain().focus().unsetLink().run()}
+        disabled={!editorState.isLink}
+      >
+        <Link2OffIcon />
+      </Button>
+
+      <Button
+        type={"button"}
+        variant={"ghost"}
         onClick={() => editor.chain().focus().unsetAllMarks().run()}
       >
         <RemoveFormatting />
       </Button>
-
       {/* Undo / Redo */}
       <Button
         type="button"
@@ -350,7 +521,6 @@ const colors = [
       >
         <Redo2 />
       </Button>
-
       <div className="flex gap-2 flex-wrap">
         <Button
           type={"button"}

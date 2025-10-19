@@ -68,7 +68,7 @@ const Hero = () => {
           <Link href={"/login"}>Get Started</Link>
         </Button>
         <Button variant="outline" size="lg" className="font-bold">
-          Explore Blogs
+          <Link href="/blogs">Explore Blogs</Link>
         </Button>
       </div>
     </section>
