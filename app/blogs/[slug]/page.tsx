@@ -9,8 +9,10 @@ import {
 } from "@/components/ui/card";
 import { getBlogBySlug } from "@/features/blogs/action/get-blog";
 import BlogContent from "@/features/blogs/components/BlogContent";
+import { auth } from "@/lib/Auth/auth";
 import type { BlogData } from "@/lib/Database/Models/blog.model";
-import { ArrowLeft, Eye, User2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Eye, User2 } from "lucide-react";
+import { headers } from "next/headers";
 import Link from "next/link";
 
 export async function generateMetadata({
@@ -27,6 +29,9 @@ export async function generateMetadata({
 }
 
 const page = async ({ params }: { params: { slug: string } }) => {
+  const user = await auth.api
+    .getSession({ headers: await headers() })
+    .then((res) => res?.user);
   const { slug } = await params;
   const blogData: BlogData | null = await getBlogBySlug(slug);
 
@@ -34,12 +39,22 @@ const page = async ({ params }: { params: { slug: string } }) => {
 
   return (
     <main className="container min-h-[calc(100vh-150px)] mx-auto pt-8 scroll-mt-28 p-2">
-      <Button className="my-2" asChild>
-        <Link href="/blogs">
-          <ArrowLeft className="mr-2" />
-          Go Back
-        </Link>
-      </Button>
+      <div className="flex justify-between items-center">
+        <Button className="my-2" asChild>
+          <Link href="/blogs">
+            <ArrowLeft className="mr-2" />
+            Go Back
+          </Link>
+        </Button>
+        {user?.id === blogData?.author.id.toString() && (
+          <Button className="my-2" asChild>
+            <Link href={`/edit-blog/?slug=${blogData?.slug}`}>
+              Edit
+              <ArrowRight className="ml-2" />
+            </Link>
+          </Button>
+        )}
+      </div>
       <Card>
         <CardHeader>
           <CardTitle>{blogData?.title}</CardTitle>

@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input";
 import BlogEditor from "@/features/create-blog/components/BlogEditor";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/Auth/auth-client";
-import { createBlog } from "@/features/create-blog/actions/create";
 import { toast } from "sonner";
 import {
   Select,
@@ -26,6 +25,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, X } from "lucide-react";
+import { BlogData } from "@/lib/Database/Models/blog.model";
+import { updateBlog } from "../actions/update-blog";
 
 // category options related to literature
 const categoryOptions = [
@@ -40,8 +41,9 @@ const categoryOptions = [
   { value: "Sports", label: "Sports" },
 ];
 
-const blogFormSchema = z.object({
+const editBlogFormSchema = z.object({
   title: z.string().min(2).max(100),
+  slug: z.string().min(2).max(100),
   description: z.string().min(2).max(300),
   content: z.string().min(2),
   coverImage: z.string().optional(),
@@ -53,32 +55,36 @@ const blogFormSchema = z.object({
   category: z.string().default("General"),
 });
 
-export type BlogFormData = z.infer<typeof blogFormSchema>;
+export type EditBlogFormData = z.infer<typeof editBlogFormSchema>;
 
-export default function BlogForm() {
+export default function EditBlogForm({ blog }: { blog: BlogData }) {
   const router = useRouter();
   const { data: session, isPending, error, refetch } = authClient.useSession();
 
   const form = useForm({
-    resolver: zodResolver(blogFormSchema),
+    resolver: zodResolver(editBlogFormSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      content: "",
-      coverImage: "",
-      author: { name: "", id: "" },
-      tags: [],
-      category: "General",
+      title: blog.title,
+      description: blog.description,
+      content: blog.content,
+      coverImage: blog.coverImage,
+      tags: blog.tags,
+      slug: blog.slug,
+      author: {
+        name: blog.author.name,
+        id: blog.author.id.toString(),
+      },
+      category: blog.category,
     },
   });
 
   const [tagInput, setTagInput] = useState("");
 
-  const onSubmit = async (data: BlogFormData) => {
-    const result = await createBlog(data);
+  const onSubmit = async (data: EditBlogFormData) => {
+    const result = await updateBlog(data);
     if (result?.status === "success") {
       form.reset();
-      toast.success("Blog created successfully");
+      toast.success("Blog updated successfully");
       router.push(`/blogs/${result.slug}`);
     }
     if (result?.status === "error") {
@@ -91,10 +97,12 @@ export default function BlogForm() {
       if (!session) {
         router.push("/login");
       }
+      if (blog.author.id.toString() !== session?.user.id) {
+        router.push("/");
+      }
     }
-    form.setValue("author.name", session?.user.name || "");
-    form.setValue("author.id", session?.user.id || "");
-  }, [form, session, router, isPending]);
+
+  }, [session,router, isPending, blog.author]);
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -263,10 +271,10 @@ export default function BlogForm() {
         {form.formState.isSubmitting ? (
           <span className="flex items-center">
             <Loader2 className="mr-2 animate-spin" />
-            Publishing Blog
+            Updating Blog
           </span>
         ) : (
-          "Publish Blog"
+          "Update Blog"
         )}
       </Button>
     </form>

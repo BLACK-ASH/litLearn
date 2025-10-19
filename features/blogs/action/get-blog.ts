@@ -23,7 +23,7 @@ export const getAllBlogs =cache( async (): Promise<BlogData[]> => {
         await connectDB();
         const blogs = (await Blog.find().lean()) as unknown as BlogData[];
         if (!blogs) return [];
-        return blogs;
+        return JSON.parse(JSON.stringify(blogs));
     } catch (error) {
         console.error("Error fetching all blogs:", error);
         return [];
@@ -37,7 +37,7 @@ export const getBlogBySlug =cache( async (slug: string): Promise<BlogData | null
         await increaseViews(slug);
         const blog = await Blog.findOne({ slug }).lean() as BlogData | null;
         if (!blog) return null;
-        return blog;
+        return JSON.parse(JSON.stringify(blog));
     } catch (error) {
         console.error("Error fetching blog by slug:", error);
         return null;
