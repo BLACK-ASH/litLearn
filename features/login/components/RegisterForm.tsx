@@ -22,6 +22,7 @@ import { Controller, useForm } from "react-hook-form";
 
 import { emailAndPasswordSignUp, signUpWithGoogle } from "@/lib/Auth/sign-up";
 import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/navigation";
 
 const registerFormSchema = z.object({
   name: z.string().min(2).max(20),
@@ -46,12 +47,14 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   });
 
+  const router = useRouter();
+
   async function onSubmit(data: registerFormSchemaData) {
     if (data.password !== data.confirmPassword) {
       form.setError("confirmPassword", { message: "Passwords do not match" });
       return;
     }
-    await emailAndPasswordSignUp(data.email, data.password, data.name);
+    await emailAndPasswordSignUp(data.email, data.password, data.name,router);
   }
 
   return (

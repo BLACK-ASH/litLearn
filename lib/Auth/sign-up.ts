@@ -1,10 +1,10 @@
 //import the auth client
 
-import { redirect } from "next/navigation";
+import {  useRouter } from "next/navigation";
 import { authClient } from "./auth-client";
 import { toast } from "sonner";
 
-const emailAndPasswordSignUp = async (email: string, password: string, name: string) => {
+const emailAndPasswordSignUp = async (email: string, password: string, name: string,router: ReturnType<typeof useRouter>) => {
 
     await authClient.signUp.email({
         email, // user email address
@@ -17,7 +17,7 @@ const emailAndPasswordSignUp = async (email: string, password: string, name: str
         onSuccess: (ctx) => {
             //redirect to the dashboard or sign in page
             toast.success("Registration successful")
-            redirect("/")
+            router.push("/")
         },
         onError: (ctx) => {
             // display the error message

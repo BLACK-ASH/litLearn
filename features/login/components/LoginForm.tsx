@@ -23,6 +23,7 @@ import { Controller, useForm } from "react-hook-form";
 import { emailAndPasswordSignIn } from "@/lib/Auth/sign-in";
 import { signUpWithGoogle } from "@/lib/Auth/sign-up";
 import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.email(),
@@ -43,10 +44,11 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   });
 
-  async function onSubmit(data: FormData) {
-    console.log(data);
+  const router = useRouter();
 
-    await emailAndPasswordSignIn(data.email, data.password);
+  async function onSubmit(data: FormData) {
+    await emailAndPasswordSignIn(data.email, data.password,router);
+    router.refresh();
   }
 
   return (

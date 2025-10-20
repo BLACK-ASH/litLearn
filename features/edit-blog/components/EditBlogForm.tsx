@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import BlogEditor from "@/features/create-blog/components/BlogEditor";
 import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/Auth/auth-client";
+import { authClient, hasPermissionToUpdateBlog } from "@/lib/Auth/auth-client";
 import { toast } from "sonner";
 import {
   Select,
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, X } from "lucide-react";
-import { BlogData } from "@/lib/Database/Models/blog.model";
+import type { BlogData } from "@/lib/Database/Models/blog.model";
 import { updateBlog } from "../actions/update-blog";
 
 // category options related to literature
@@ -59,7 +59,6 @@ export type EditBlogFormData = z.infer<typeof editBlogFormSchema>;
 
 export default function EditBlogForm({ blog }: { blog: BlogData }) {
   const router = useRouter();
-  const { data: session, isPending, error, refetch } = authClient.useSession();
 
   const form = useForm({
     resolver: zodResolver(editBlogFormSchema),
@@ -91,17 +90,51 @@ export default function EditBlogForm({ blog }: { blog: BlogData }) {
       toast.error(result.message);
     }
   };
+  const { data: session, isPending } = authClient.useSession();
 
-  useEffect(() => {
-    if (!isPending) {
-      if (!session) {
-        router.push("/login");
+ useEffect(() => {
+  if (!session && !isPending) {
+    toast.error("You must be logged in to edit a blog.");
+    router.push("/login");
+    return;
+  }
+
+  if (!blog) {
+    toast.error("Blog not found.");
+    router.push("/blogs");
+    return;
+  }
+
+  const checkPermission = async () => {
+    try {
+      // ✅ Check if user has update permission
+      const hasPermission = await hasPermissionToUpdateBlog().then(
+        (res) => res.data?.success
+      );
+
+      // ✅ Allow access if:
+      // 1️⃣ The user is the author OR
+      // 2️⃣ The user has explicit "update" permission
+      if (
+        session?.user?.id === blog.author.id.toString() ||
+        hasPermission
+      ) {
+        return true;
+      } else {
+        toast.error("You don't have permission to edit this blog.");
+        router.push("/blogs");
       }
-      if (blog.author.id.toString() !== session?.user.id) {
-        router.push("/");
-      }
+    } catch (err) {
+      console.error("Permission check failed:", err);
+      toast.error("Failed to check permission.");
+      router.push("/blogs");
     }
-  }, [session, router, isPending, blog.author]);
+  };
+
+  if (!isPending && session) {
+    checkPermission();
+  }
+}, [session, router, blog, isPending]);
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

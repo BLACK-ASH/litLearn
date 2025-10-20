@@ -2,9 +2,9 @@
 
 import ThemeToggle from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/Auth/auth-client";
+import { authClient, useSession } from "@/lib/Auth/auth-client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
@@ -19,12 +19,9 @@ const Navbar = () => {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const {
-    data: session,
-    isPending,
-    error,
-    refetch,
-  } = authClient.useSession();
+  const { data: session, isPending, error, refetch } = useSession();
+
+  const router = useRouter();
 
   return (
     <header className="fixed top-0 left-0 w-full bg-background/70 backdrop-blur border-b z-10">
@@ -52,9 +49,24 @@ const Navbar = () => {
 
         {/* Auth + Theme */}
         <div className="hidden md:flex items-center gap-2">
-          {session && <p className="mr-2 text-sm text-muted-foreground">{session.user.name}</p>}
+          {session && (
+            <p className="mr-2 text-sm text-muted-foreground">
+              {session.user.name}
+            </p>
+          )}
           {session ? (
-            <Button size="sm" onClick={() => authClient.signOut()}>
+            <Button
+              size="sm"
+              onClick={() => {
+                authClient.signOut({
+                  fetchOptions: {
+                    onSuccess: (ctx) => {
+                      router.refresh();
+                    },
+                  },
+                });
+              }}
+            >
               Logout
             </Button>
           ) : (
@@ -67,7 +79,7 @@ const Navbar = () => {
 
         {/* Mobile Menu Button */}
         <Button
-        variant={"ghost"}
+          variant={"ghost"}
           onClick={() => setMenuOpen((prev) => !prev)}
           className="md:hidden p-2 rounded-lg hover:bg-accent"
         >
@@ -95,14 +107,22 @@ const Navbar = () => {
 
           <div className="mt-3 flex flex-col gap-2 w-full">
             {session && (
-              <p className="text-sm text-muted-foreground">{session.user.name}</p>
+              <p className="text-sm text-muted-foreground">
+                {session.user.name}
+              </p>
             )}
             {session ? (
               <Button
                 className="w-full"
                 onClick={() => {
                   setMenuOpen(false);
-                  authClient.signOut();
+                  authClient.signOut({
+                    fetchOptions: {
+                      onSuccess: (ctx) => {
+                        router.refresh();
+                      },
+                    },
+                  });
                 }}
               >
                 Logout

@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/card";
 import { getBlogBySlug } from "@/features/blogs/action/get-blog";
 import BlogContent from "@/features/blogs/components/BlogContent";
-import { auth } from "@/lib/Auth/auth";
+import UpdateBlogButton from "@/features/blogs/components/UpdateBlogButton";
 import type { BlogData } from "@/lib/Database/Models/blog.model";
-import { ArrowLeft, ArrowRight, Eye, User2 } from "lucide-react";
-import { headers } from "next/headers";
+import { ArrowLeft, Eye, User2 } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({
   params,
@@ -29,13 +29,10 @@ export async function generateMetadata({
 }
 
 const page = async ({ params }: { params: { slug: string } }) => {
-  const user = await auth.api
-    .getSession({ headers: await headers() })
-    .then((res) => res?.user);
   const { slug } = await params;
   const blogData: BlogData | null = await getBlogBySlug(slug);
 
-  if (!blogData) return <div>Blog not found</div>;
+  if (!blogData) return notFound();
 
   return (
     <main className="container min-h-[calc(100vh-150px)] mx-auto pt-8 scroll-mt-28 p-2">
@@ -46,14 +43,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
             Go Back
           </Link>
         </Button>
-        {user?.id === blogData?.author.id.toString() && (
-          <Button className="my-2" asChild>
-            <Link href={`/edit-blog/?slug=${blogData?.slug}`}>
-              Edit
-              <ArrowRight className="ml-2" />
-            </Link>
-          </Button>
-        )}
+        <UpdateBlogButton slug={blogData.slug} authorId={blogData.author.id.toString()} />
       </div>
       <Card>
         <CardHeader>

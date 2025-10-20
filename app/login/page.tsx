@@ -15,7 +15,7 @@ const page = async () => {
   return (
     <Tabs
       defaultValue="login"
-      className="w-[500px] min-h-[calc(100vh-100px)] pt-32 mx-auto"
+      className="max-w-[500px] min-h-[calc(100vh-165px)] pt-32 mt-16 p-2 mx-auto"
     >
       <TabsList>
         <TabsTrigger value="login">Login</TabsTrigger>

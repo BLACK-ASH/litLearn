@@ -1,9 +1,9 @@
 
-import { redirect } from "next/navigation";
+import { type useRouter } from "next/navigation";
 import { authClient } from "./auth-client"
 import { toast } from "sonner";
 
-const emailAndPasswordSignIn = async (email: string, password: string) => {
+const emailAndPasswordSignIn = async (email: string, password: string, router: ReturnType<typeof useRouter>) => {
 
     await authClient.signIn.email({
         /**
@@ -17,7 +17,7 @@ const emailAndPasswordSignIn = async (email: string, password: string) => {
         /**
          * A URL to redirect to after the user verifies their email (optional)
         */
-        callbackURL: "/dashboard",
+        callbackURL: "/",
         /**
          * remember the user session after the browser is closed. 
          * @default true
@@ -29,13 +29,14 @@ const emailAndPasswordSignIn = async (email: string, password: string) => {
             //redirect to the dashboard or sign in page
             
             toast.success("Login successful")
-            redirect("/")
+            router.push("/")
         },
         onError: (ctx) => {
             // display the error message
             toast.error(ctx.error.message);
         },
     })
+
 }
 
 
