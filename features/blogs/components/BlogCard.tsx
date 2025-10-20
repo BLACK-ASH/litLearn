@@ -48,7 +48,7 @@ const BlogCard = ({ blog }: { blog: BlogData }) => {
 
       <CardFooter className="flex gap-2 justify-between">
         <Button variant={"link"} asChild>
-          <Link href={`/blogs/${blog.slug}`} target="_blank">
+          <Link href={`/blogs/${blog.slug}`}>
             Read more
             <ArrowRight className="ml-2 size-4" />
           </Link>

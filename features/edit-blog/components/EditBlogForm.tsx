@@ -101,8 +101,7 @@ export default function EditBlogForm({ blog }: { blog: BlogData }) {
         router.push("/");
       }
     }
-
-  }, [session,router, isPending, blog.author]);
+  }, [session, router, isPending, blog.author]);
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -137,24 +136,7 @@ export default function EditBlogForm({ blog }: { blog: BlogData }) {
           )}
         />
 
-        <div className="flex items-center gap-2 justify-between">
-          {/* Cover Image */}
-          <Controller
-            name="coverImage"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="coverImage">Cover Image</FieldLabel>
-                <Input
-                  {...field}
-                  id="coverImage"
-                  placeholder="Cover image URL"
-                />
-                {fieldState.error && <FieldError errors={[fieldState.error]} />}
-              </Field>
-            )}
-          />
-
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-2 justify-between">
           {/* Category */}
           <Controller
             name="category"
@@ -209,7 +191,7 @@ export default function EditBlogForm({ blog }: { blog: BlogData }) {
                       </button>
                     </span>
                   ))}
-                  <textarea
+                  <input
                     className="flex-1 outline-none bg-transparent text-sm"
                     placeholder="Add a tag and press Enter"
                     value={tagInput}
@@ -231,6 +213,23 @@ export default function EditBlogForm({ blog }: { blog: BlogData }) {
                     }}
                   />
                 </div>
+              </Field>
+            )}
+          />
+
+          {/* Cover Image */}
+          <Controller
+            name="coverImage"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field className="col-span-2" data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="coverImage">Cover Image</FieldLabel>
+                <Input
+                  {...field}
+                  id="coverImage"
+                  placeholder="Cover image URL"
+                />
+                {fieldState.error && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
           />
