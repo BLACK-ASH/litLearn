@@ -5,6 +5,8 @@ export const metadata = {
   title: "Lit Learn - Blogs",
   description: "Blogs",
 }
+
+export const revalidate = 3600; // revalidate every hour
 const page = async () => {
   const blogs = await getAllBlogs();
 

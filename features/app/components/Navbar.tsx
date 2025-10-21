@@ -2,11 +2,11 @@
 
 import ThemeToggle from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { authClient, useSession } from "@/lib/Auth/auth-client";
+import { useSession } from "@/lib/Auth/auth-client";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { Menu } from "lucide-react";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import MobileNav from "./MobileNav";
+import LogoutButton from "./LogoutButton";
 
 const links = [
   { id: 1, title: "Home", href: "/" },
@@ -17,17 +17,17 @@ const links = [
 
 const Navbar = () => {
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
-
   const { data: session, isPending, error, refetch } = useSession();
-
-  const router = useRouter();
 
   return (
     <header className="fixed top-0 left-0 w-full bg-background/70 backdrop-blur border-b z-10">
       <nav className="flex items-center justify-between px-4 py-3 md:px-8">
         {/* Brand */}
-        <h1 className="font-bold text-primary text-xl md:text-2xl">LitLearn</h1>
+        <Link href="/" className="flex items-center gap-2">
+          <h1 className="font-bold text-primary text-xl md:text-2xl">
+            LitLearn
+          </h1>
+        </Link>
 
         {/* Desktop Links */}
         <ul className="hidden md:flex items-center gap-2">
@@ -55,20 +55,7 @@ const Navbar = () => {
             </p>
           )}
           {session ? (
-            <Button
-              size="sm"
-              onClick={() => {
-                authClient.signOut({
-                  fetchOptions: {
-                    onSuccess: (ctx) => {
-                      router.refresh();
-                    },
-                  },
-                });
-              }}
-            >
-              Logout
-            </Button>
+            <LogoutButton />
           ) : (
             <Button size="sm" asChild>
               <Link href="/login">Login</Link>
@@ -77,65 +64,10 @@ const Navbar = () => {
           <ThemeToggle />
         </div>
 
-        {/* Mobile Menu Button */}
-        <Button
-          variant={"ghost"}
-          onClick={() => setMenuOpen((prev) => !prev)}
-          className="md:hidden p-2 rounded-lg hover:bg-accent"
-        >
-          <Menu className="size-4" />
-        </Button>
-      </nav>
-
-      {/* Mobile Dropdown */}
-      {menuOpen && (
-        <div className="md:hidden flex flex-col items-start bg-background/90 backdrop-blur px-6 pb-4 border-t animate-in fade-in slide-in-from-top-2">
-          {links.map((link) => (
-            <Link
-              key={link.id}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className={`py-2 text-base w-full ${
-                pathname === link.href
-                  ? "text-primary font-semibold underline underline-offset-4"
-                  : "text-muted-foreground hover:text-primary"
-              }`}
-            >
-              {link.title}
-            </Link>
-          ))}
-
-          <div className="mt-3 flex flex-col gap-2 w-full">
-            {session && (
-              <p className="text-sm text-muted-foreground">
-                {session.user.name}
-              </p>
-            )}
-            {session ? (
-              <Button
-                className="w-full"
-                onClick={() => {
-                  setMenuOpen(false);
-                  authClient.signOut({
-                    fetchOptions: {
-                      onSuccess: (ctx) => {
-                        router.refresh();
-                      },
-                    },
-                  });
-                }}
-              >
-                Logout
-              </Button>
-            ) : (
-              <Button asChild className="w-full">
-                <Link href="/login">Login</Link>
-              </Button>
-            )}
-            <ThemeToggle />
-          </div>
+        <div className="md:hidden">
+          <MobileNav session={session} links={links} pathname={pathname} />
         </div>
-      )}
+      </nav>
     </header>
   );
 };

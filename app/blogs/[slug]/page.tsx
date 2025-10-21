@@ -25,8 +25,15 @@ export async function generateMetadata({
   return {
     title: blogData?.title,
     description: blogData?.description,
+    openGraph: {
+      title: blogData?.title,
+      description: blogData?.description,
+      images: [blogData?.coverImage || "/default-fallback-image.png"],
+    }
   };
 }
+
+// export const revalidate = 604800; // revalidate per week
 
 const page = async ({ params }: { params: { slug: string } }) => {
   const { slug } = await params;
@@ -43,7 +50,10 @@ const page = async ({ params }: { params: { slug: string } }) => {
             Go Back
           </Link>
         </Button>
-        <UpdateBlogButton slug={blogData.slug} authorId={blogData.author.id.toString()} />
+        <UpdateBlogButton
+          slug={blogData.slug}
+          authorId={blogData.author.id.toString()}
+        />
       </div>
       <Card>
         <CardHeader>
