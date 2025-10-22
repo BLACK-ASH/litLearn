@@ -3,7 +3,8 @@ import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { nextCookies } from "better-auth/next-js";
 import { admin as adminPlugin } from "better-auth/plugins"
-import {ac, admin, editor, user } from "./permission";
+import { ac, admin, editor, user } from "./permission";
+import { sendEmailVerificationMail } from "../Mailer/send-email-verification-mail";
 
 const client = new MongoClient(process.env.MONGODB_URI as string);
 const db = client.db();
@@ -25,7 +26,14 @@ export const auth = betterAuth({
   ],
 
   emailAndPassword: {
-    enabled: true
+    enabled: true,
+    requireEmailVerification: true,
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      await sendEmailVerificationMail({ user, url, token });
+    },
+    
   },
   socialProviders: {
     google: {

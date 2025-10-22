@@ -1,10 +1,10 @@
 //import the auth client
 
-import {  useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { authClient } from "./auth-client";
 import { toast } from "sonner";
 
-const emailAndPasswordSignUp = async (email: string, password: string, name: string,router: ReturnType<typeof useRouter>) => {
+const emailAndPasswordSignUp = async (email: string, password: string, name: string, router: ReturnType<typeof useRouter>) => {
 
     await authClient.signUp.email({
         email, // user email address
@@ -17,7 +17,7 @@ const emailAndPasswordSignUp = async (email: string, password: string, name: str
         onSuccess: (ctx) => {
             //redirect to the dashboard or sign in page
             toast.success("Registration successful")
-            router.push("/")
+            router.push("/login/verify-email");
         },
         onError: (ctx) => {
             // display the error message
@@ -29,9 +29,9 @@ const emailAndPasswordSignUp = async (email: string, password: string, name: str
 }
 
 const signUpWithGoogle = async () => {
-    const data = await authClient.signIn.social({
+    await authClient.signIn.social({
         provider: "google",
-    });  
+    });
 }
 
-export { emailAndPasswordSignUp , signUpWithGoogle };
+export { emailAndPasswordSignUp, signUpWithGoogle };

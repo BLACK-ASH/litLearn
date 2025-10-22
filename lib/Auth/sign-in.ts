@@ -27,12 +27,20 @@ const emailAndPasswordSignIn = async (email: string, password: string, router: R
         //callbacks
         onSuccess: (ctx) => {
             //redirect to the dashboard or sign in page
-            
+
             toast.success("Login successful")
             router.push("/")
         },
-        onError: (ctx) => {
+        onError: async (ctx) => {
             // display the error message
+
+            // Handle the error
+            if (ctx.error.status === 403) {
+                await authClient.sendVerificationEmail({ email, callbackURL: '/' });
+                toast.error("Please verify your email address");
+                router.push("/login/verify-email");
+                return
+            }
             toast.error(ctx.error.message);
         },
     })
