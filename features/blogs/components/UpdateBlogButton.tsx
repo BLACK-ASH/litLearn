@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { authClient, hasPermissionToUpdateBlog, useSession } from "@/lib/Auth/auth-client";
+import {
+  authClient,
+  hasPermissionToUpdateBlog,
+  useSession,
+} from "@/lib/Auth/auth-client";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { Edit as EditIcon } from "lucide-react";
 
 interface UpdateBlogButtonProps {
   slug: string;
@@ -43,10 +47,9 @@ const UpdateBlogButton = ({ slug, authorId }: UpdateBlogButtonProps) => {
   if (isPending || loading || !allowed) return null;
 
   return (
-    <Button className="my-2" asChild>
+    <Button variant="ghost" className="my-2" asChild>
       <Link href={`/edit-blog?slug=${slug}`}>
-        <ArrowRight className="mr-2" />
-        Edit Blog
+        <EditIcon className="size-4 text-primary" />
       </Link>
     </Button>
   );

@@ -10,9 +10,8 @@ import {
   CardAction,
 } from "@/components/ui/card";
 import { BlogData } from "@/lib/Database/Models/blog.model";
-import { ArrowRight, Eye, User2 } from "lucide-react";
+import {  EyeIcon} from "lucide-react";
 import Link from "next/link";
-import React from "react";
 
 const BlogCard = ({ blog }: { blog: BlogData }) => {
   return (
@@ -22,7 +21,8 @@ const BlogCard = ({ blog }: { blog: BlogData }) => {
         className="fade-in transition-opacity duration-200 hover:opacity-70"
       >
         <AspectRatio ratio={16 / 9}>
-          <img
+          {/** biome-ignore lint/performance/noImgElement: <explanation> */}
+<img
             src={blog.coverImage || "/default-fallback-image.png"}
             alt={blog.title}
             className="object-cover w-full h-full"
@@ -33,7 +33,7 @@ const BlogCard = ({ blog }: { blog: BlogData }) => {
 
       <CardHeader>
         <CardAction>
-          <Badge variant="secondary" className="font-bold">
+          <Badge variant="outline" className="font-bold">
             {blog.category}
           </Badge>
         </CardAction>
@@ -48,18 +48,13 @@ const BlogCard = ({ blog }: { blog: BlogData }) => {
 
       <CardFooter className="flex gap-2 justify-between">
         <Button variant={"link"} asChild>
-          <Link href={`/blogs/${blog.slug}`}>
-            Read more
-            <ArrowRight className="ml-2 size-4" />
-          </Link>
+          <Link href={`/blogs/${blog.slug}`}>Read more</Link>
         </Button>
 
-        <div className="flex text-foreground  items-center gap-2">
-          <Eye className="size-4" /> {blog?.views}
-        </div>
-
-        <div className="flex text-foreground  items-center gap-2">
-          <User2 className="size-4" /> {blog?.author.name}
+        {blog?.author.name}
+        <div className="flex text-sm text-foreground  items-center gap-2">
+          <EyeIcon className="size-4 text-primary" />
+          {blog?.views}
         </div>
       </CardFooter>
     </Card>

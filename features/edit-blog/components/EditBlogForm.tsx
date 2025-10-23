@@ -48,6 +48,7 @@ const editBlogFormSchema = z.object({
   content: z.string().min(2),
   coverImage: z.string().optional(),
   author: z.object({
+    image: z.string().optional(),
     name: z.string(),
     id: z.string(),
   }),
@@ -70,6 +71,7 @@ export default function EditBlogForm({ blog }: { blog: BlogData }) {
       tags: blog.tags,
       slug: blog.slug,
       author: {
+        image: blog.author.image,
         name: blog.author.name,
         id: blog.author.id.toString(),
       },

@@ -9,7 +9,7 @@ const BlogContent =async ({ html }: BlogContentProps) => {
   return (
     <div >
       <div
-        className="prose prose-lg pt-8 max-w-none prose-headings:text-foreground prose-p:text-muted-foreground"
+        className="prose prose-lg max-w-none prose-headings:text-foreground prose-p:text-muted-foreground"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
         dangerouslySetInnerHTML={{ __html: cleanHTML }}
       />

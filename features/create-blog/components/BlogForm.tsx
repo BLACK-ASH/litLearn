@@ -46,6 +46,7 @@ const blogFormSchema = z.object({
   content: z.string().min(2),
   coverImage: z.string().optional(),
   author: z.object({
+    image: z.string().optional(),
     name: z.string(),
     id: z.string(),
   }),
@@ -66,7 +67,7 @@ export default function BlogForm() {
       description: "",
       content: "",
       coverImage: "",
-      author: { name: "", id: "" },
+      author: { name: "", id: "", image: undefined},
       tags: [],
       category: "General",
     },
@@ -92,6 +93,7 @@ export default function BlogForm() {
         router.push("/login");
       }
     }
+    form.setValue("author.image", session?.user.image || undefined);
     form.setValue("author.name", session?.user.name || "");
     form.setValue("author.id", session?.user.id || "");
   }, [form, session, router, isPending]);

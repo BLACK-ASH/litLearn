@@ -8,6 +8,7 @@ export interface BlogData extends Document {
   content: string;
   coverImage?: string;
   author: {
+    image?: string;
     name: string;
     id: mongoose.Types.ObjectId;
   };
@@ -46,6 +47,7 @@ const BlogSchema = new Schema<BlogData>(
       default: "",
     },
     author: {
+      image: { type: String, default: undefined },
       name: { type: String, required: true },
       id: { type: Schema.Types.ObjectId, ref: "User", required: true },
     },

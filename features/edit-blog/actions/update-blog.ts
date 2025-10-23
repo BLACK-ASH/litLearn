@@ -71,7 +71,7 @@ export const updateBlog = async (
         content: sanitizedContent,
         description: sanitizedDescription,
         coverImage: data.coverImage,
-        author: { name: data.author.name, id },
+        author: { name: data.author.name, id, image: data?.author.image ?? undefined },
         tags: sanitizedTags,
         category: sanitizedCategory,
       },
