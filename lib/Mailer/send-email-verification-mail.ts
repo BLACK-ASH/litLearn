@@ -1,4 +1,4 @@
-import { User } from "../Auth/auth-client";
+import type { User } from "../Auth/auth-client";
 import { sendMail } from "./send-mail";
 
 type UserMail = Partial<User>

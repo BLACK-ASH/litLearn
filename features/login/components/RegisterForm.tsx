@@ -23,6 +23,7 @@ import { Controller, useForm } from "react-hook-form";
 import { emailAndPasswordSignUp, signUpWithGoogle } from "@/lib/Auth/sign-up";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
+import PasswordInput from "@/components/PasswordInput";
 
 const registerFormSchema = z.object({
   name: z.string().min(2).max(20),
@@ -54,7 +55,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
       form.setError("confirmPassword", { message: "Passwords do not match" });
       return;
     }
-    await emailAndPasswordSignUp(data.email, data.password, data.name,router);
+    await emailAndPasswordSignUp(data.email, data.password, data.name, router);
   }
 
   return (
@@ -116,7 +117,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
+                  <PasswordInput
                     {...field}
                     id="password"
                     aria-invalid={fieldState.invalid}
@@ -139,7 +140,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
                   <FieldLabel htmlFor="confirmPassword">
                     Confirm Password
                   </FieldLabel>
-                  <Input
+                  <PasswordInput
                     {...field}
                     id="confirmPassword"
                     aria-invalid={fieldState.invalid}

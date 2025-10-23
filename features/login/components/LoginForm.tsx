@@ -14,7 +14,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +23,8 @@ import { emailAndPasswordSignIn } from "@/lib/Auth/sign-in";
 import { signUpWithGoogle } from "@/lib/Auth/sign-up";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
+import PasswordInput from "@/components/PasswordInput";
+import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
   email: z.email(),
@@ -89,7 +90,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <Input
+                  <PasswordInput
                     {...field}
                     id="password"
                     aria-invalid={fieldState.invalid}
