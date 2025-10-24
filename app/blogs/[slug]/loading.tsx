@@ -12,7 +12,7 @@ import { HomeIcon } from "lucide-react";
 export default function Loading() {
   // Or a custom loading skeleton component
   return (
-    <main className="container min-h-[calc(100vh-150px)] mx-auto pt-8 scroll-mt-28 p-4">
+    <main className="container min-h-[calc(100vh-150px)] mx-auto pt-8 scroll-mt-28 p-4 ">
       <div className="flex justify-between items-center">
         <Breadcrumb>
           <BreadcrumbList>
@@ -52,11 +52,11 @@ export default function Loading() {
       </div>
 
       <div className="space-y-2 my-8">
-        <Skeleton className="h-[40vh] w-[60vh] mx-auto" />
-        <Skeleton className="h-8  w-[80vh] mx-auto" />
+        <Skeleton className="h-[40vh] w-[70vw] mx-auto" />
+        <Skeleton className="h-8 my-4 w-[80vw] mx-auto" />
       </div>
 
-      <Skeleton className="h-screen w-[80vh] mx-auto" />
+      <Skeleton className="h-screen w-[80vw] mx-auto" />
     </main>
   );
 }
