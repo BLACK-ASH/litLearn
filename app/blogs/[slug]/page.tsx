@@ -12,6 +12,7 @@ import {
 import { getBlogBySlug } from "@/features/blogs/action/get-blog";
 import BlogContent from "@/features/blogs/components/BlogContent";
 import UpdateBlogButton from "@/features/blogs/components/UpdateBlogButton";
+import formatDateTime from "@/features/blogs/utility/format-date";
 import type { BlogData } from "@/lib/Database/Models/blog.model";
 import { HomeIcon, User as UserIcon } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -79,11 +80,8 @@ const page = async ({ params }: { params: { slug: string } }) => {
         </h1>
         <div className="flex flex-wrap gap-2">
           {blogData.tags?.map((tag) => (
-            <Badge
-              key={tag}
-              variant="outline"
-            >
-             # {tag}
+            <Badge key={tag} variant="outline">
+              # {tag}
             </Badge>
           ))}
         </div>
@@ -99,35 +97,20 @@ const page = async ({ params }: { params: { slug: string } }) => {
             <UserIcon className="size-4" />
           </AvatarFallback>
         </Avatar>
-
-        <p className="test-sm font-semibold">
-          {blogData?.author.name}
+        <div>
+          <p className="test-sm font-semibold">{blogData?.author.name}</p>
           <span className="text-muted-foreground font-normal">
-            {" "}
-            | Created on{" "}
+            Created on {formatDateTime(blogData?.createdAt)}
           </span>
-          <span>
-            <span className="text-muted-foreground font-normal">
-              {new Date(blogData?.createdAt).toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </span>
-          </span>
-        </p>
+        </div>
       </div>
 
       <p>Total views: {blogData?.views}</p>
 
-      {blogData?.createdAt !== blogData?.updatedAt && (
+      {formatDateTime(blogData?.createdAt) !==
+        formatDateTime(blogData?.updatedAt) && (
         <p className=" text-muted-foreground mb-4">
-          Last updated on{" "}
-          {new Date(blogData?.updatedAt).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })}
+          Last updated on {formatDateTime(blogData?.updatedAt)}
         </p>
       )}
 

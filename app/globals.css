@@ -181,7 +181,7 @@ body {
   /* Enhanced Heading Styles */
   .prose h1 {
     @apply text-3xl md:text-5xl font-extrabold tracking-tight mb-6 mt-10 text-foreground leading-tight;
-  
+
   }
 
   .prose h2 {
@@ -207,7 +207,7 @@ body {
 
   /* Inline code */
   .prose code {
-    @apply  text-foreground text-sm rounded px-1 py-0.5;
+    @apply bg-muted text-foreground px-1 py-0.5 rounded;
   }
 
   /* Preformatted code blocks */
@@ -244,6 +244,37 @@ body {
 
   .dark .prose blockquote {
     @apply border-primary/50 text-muted-foreground;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-primary pl-4 italic text-muted-foreground;
+
+  }
+
+  .prose img {
+    @apply rounded-lg;
+
+  }
+
+  .prose ul {
+    @apply list-disc pl-6;
+
+  }
+
+  .prose ol {
+    @apply list-decimal pl-6;
+  }
+
+  .prose li {
+    @apply my-1;
+  }
+
+  .dark .prose {
+    @apply text-foreground;
+  }
+
+  .dark .prose a {
+    @apply text-primary hover:text-primary/90;
   }
 
 }

@@ -5,18 +5,24 @@ import Blog, { type BlogData } from "@/lib/Database/Models/blog.model";
 import { cache } from "react";
 
 const increaseViews = async (slug: string): Promise<boolean> => {
-    try {
-        await connectDB();
-        const blog: BlogData | null = await Blog.findOne({ slug });
-        if (!blog) return false;
-        blog.views++;
-        await blog.save();
-        return true
-    } catch (error) {
-        console.error("Error fetching blog by slug:", error);
-        return false
-    }
-}
+  try {
+    await connectDB();
+
+    const blog: BlogData | null = await Blog.findOne({ slug });
+    if (!blog) return false;
+
+    blog.views++;
+
+    // Save without updating the 'updatedAt' field
+    await blog.save({ timestamps: false });
+
+    return true;
+  } catch (error) {
+    console.error("Error increasing blog views:", error);
+    return false;
+  }
+};
+
 
 export const getAllBlogs =cache( async (): Promise<BlogData[]> => {
     try {
