@@ -2,7 +2,7 @@ import ThemeToggle from "@/components/theme-toggle";
 
 const Footer = () => {
   return (
-    <footer className="flex items-center mt-12 justify-between px-4 py-2 border-t-2">
+    <footer className="flex items-center justify-between px-4 py-2 border-t-2">
       <p className="font-bold text-pretty text-primary text-xl md:text-2xl">
         LitLearn
       </p>

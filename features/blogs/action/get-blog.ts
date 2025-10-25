@@ -24,28 +24,28 @@ const increaseViews = async (slug: string): Promise<boolean> => {
 };
 
 
-export const getAllBlogs =cache( async (): Promise<BlogData[]> => {
-    try {
-        await connectDB();
-        const blogs = (await Blog.find().lean()) as unknown as BlogData[];
-        if (!blogs) return [];
-        return JSON.parse(JSON.stringify(blogs));
-    } catch (error) {
-        console.error("Error fetching all blogs:", error);
-        return [];
-    }
+export const getAllBlogs = cache(async (): Promise<BlogData[]> => {
+  try {
+    await connectDB();
+    const blogs = (await Blog.find().sort({ createdAt: -1 }).lean()) as unknown as BlogData[];
+    if (!blogs) return [];
+    return JSON.parse(JSON.stringify(blogs));
+  } catch (error) {
+    console.error("Error fetching all blogs:", error);
+    return [];
+  }
 })
 
 
-export const getBlogBySlug =cache( async (slug: string): Promise<BlogData | null> => {
-    try {
-        await connectDB();
-        await increaseViews(slug);
-        const blog = await Blog.findOne({ slug }).lean() as BlogData | null;
-        if (!blog) return null;
-        return JSON.parse(JSON.stringify(blog));
-    } catch (error) {
-        console.error("Error fetching blog by slug:", error);
-        return null;
-    }
+export const getBlogBySlug = cache(async (slug: string): Promise<BlogData | null> => {
+  try {
+    await connectDB();
+    await increaseViews(slug);
+    const blog = await Blog.findOne({ slug }).lean() as BlogData | null;
+    if (!blog) return null;
+    return JSON.parse(JSON.stringify(blog));
+  } catch (error) {
+    console.error("Error fetching blog by slug:", error);
+    return null;
+  }
 })

@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Navbar from "@/features/app/components/Navbar";
 import Footer from "@/features/app/components/Footer";
 import { Toaster } from "sonner";
+import NoiseBackground from "@/components/FadeBackground";
 
 const baloo = Baloo_2({
   weight: "400",
@@ -31,9 +32,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="mt-12">{children}</main>
-          <Footer/>
-          <Toaster/>
+          <NoiseBackground>
+            <main className="py-12">{children}</main>
+          </NoiseBackground>
+          <Footer />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
