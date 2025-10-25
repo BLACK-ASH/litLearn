@@ -24,17 +24,34 @@ const increaseViews = async (slug: string): Promise<boolean> => {
 };
 
 
-export const getAllBlogs = cache(async (): Promise<BlogData[]> => {
-  try {
-    await connectDB();
-    const blogs = (await Blog.find().sort({ createdAt: -1 }).lean()) as unknown as BlogData[];
-    if (!blogs) return [];
-    return JSON.parse(JSON.stringify(blogs));
-  } catch (error) {
-    console.error("Error fetching all blogs:", error);
-    return [];
+export const getAllBlogs = cache(
+  async (slug?: string, page = 1, limit = 10): Promise<{ data: BlogData[]; total: number }> => {
+    try {
+      await connectDB();
+
+      const skip = (page - 1) * limit;
+      const query: any = {};
+
+      if (slug) {
+        // Case-insensitive partial match using regex
+        query.slug = { $regex: slug, $options: "i" };
+      }
+
+      const blogs = await Blog.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean<BlogData[]>();
+
+      const total = await Blog.countDocuments(query);
+
+      return { data: JSON.parse(JSON.stringify(blogs)), total };
+    } catch (error) {
+      console.error("Error fetching blogs:", error);
+      return { data: [], total: 0 };
+    }
   }
-})
+);
 
 
 export const getBlogBySlug = cache(async (slug: string): Promise<BlogData | null> => {
