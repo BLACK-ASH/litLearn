@@ -67,7 +67,7 @@ export default function BlogForm() {
       description: "",
       content: "",
       coverImage: "",
-      author: { name: "", id: "", image: undefined},
+      author: { name: "", id: "", image: undefined },
       tags: [],
       category: "General",
     },

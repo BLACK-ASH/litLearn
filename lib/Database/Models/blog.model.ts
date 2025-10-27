@@ -66,28 +66,28 @@ const BlogSchema = new Schema<BlogData>(
   },
   {
     timestamps: true, // adds createdAt and updatedAt
-  }
+  },
 );
 
 // 3️⃣ Pre-save middleware to auto-generate slug if missing
 BlogSchema.pre("save", async function (next) {
   if (!this.slug && this.title) {
-     const baseSlug = slugify(this.title, {
-        lower: true,
-        strict: true,
-      });
-    
-      let slug = baseSlug;
-      let count = 1;
-    
-      // Use dynamic model reference
-      while (await (this.constructor as typeof Blog).findOne({ slug })) {
-        slug = `${baseSlug}-${count}`;
-        count++;
-      }
-    
-      this.slug = slug;
-      next();
+    const baseSlug = slugify(this.title, {
+      lower: true,
+      strict: true,
+    });
+
+    let slug = baseSlug;
+    let count = 1;
+
+    // Use dynamic model reference
+    while (await (this.constructor as typeof Blog).findOne({ slug })) {
+      slug = `${baseSlug}-${count}`;
+      count++;
+    }
+
+    this.slug = slug;
+    next();
   }
   next();
 });

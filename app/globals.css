@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import '../styles/_variables.scss';
-@import '../styles/_keyframe-animations.scss';
+@import "../styles/_variables.scss";
+@import "../styles/_keyframe-animations.scss";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -73,7 +73,6 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.541 0.281 293.009);
 }
-
 
 @theme inline {
   --color-background: var(--background);
@@ -150,9 +149,9 @@ body {
   animation: l15 1s infinite linear;
 }
 .loader::before,
-.loader::after {    
+.loader::after {
   content: "";
-  grid-area: 1/1;
+  grid-area: 1 / 1;
   margin: 2px;
   border: inherit;
   border-radius: 50%;
@@ -162,8 +161,10 @@ body {
   margin: 8px;
   animation-duration: 3s;
 }
-@keyframes l15{ 
-  100%{transform: rotate(1turn)}
+@keyframes l15 {
+  100% {
+    transform: rotate(1turn);
+  }
 }
 
 @layer base {
@@ -181,7 +182,7 @@ body {
   }
 
   /* Reset first-child spacing */
-  .prose> :first-child {
+  .prose > :first-child {
     @apply mt-0;
   }
 
@@ -208,7 +209,6 @@ body {
   /* Enhanced Heading Styles */
   .prose h1 {
     @apply text-3xl md:text-5xl font-extrabold tracking-tight mb-6 mt-10 text-foreground leading-tight;
-
   }
 
   .prose h2 {
@@ -230,7 +230,6 @@ body {
   .prose h6 {
     @apply text-sm font-semibold mb-2 mt-4 text-muted-foreground/80 italic;
   }
-
 
   /* Inline code */
   .prose code {
@@ -275,17 +274,14 @@ body {
 
   .prose blockquote {
     @apply border-l-4 border-primary pl-4 italic text-muted-foreground;
-
   }
 
   .prose img {
     @apply rounded-lg;
-
   }
 
   .prose ul {
     @apply list-disc pl-6;
-
   }
 
   .prose ol {
@@ -303,5 +299,4 @@ body {
   .dark .prose a {
     @apply text-primary hover:text-primary/90;
   }
-
 }

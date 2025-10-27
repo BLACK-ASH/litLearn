@@ -1,17 +1,23 @@
+"use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LoginForm } from "@/features/login/components/LoginForm";
 import { RegisterForm } from "@/features/login/components/RegisterForm";
-import { auth } from "@/lib/Auth/auth";
-// path to your Better Auth server instance
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-const page = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(), // you need to pass the headers object.
-  });
-  if (session) {
-    redirect("/");
-  }
+import { authClient } from "@/lib/Auth/auth-client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
+
+const page = () => {
+  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const router = useRouter();
+  useEffect(() => {
+    if (session) {
+      //redirect to the dashboard or sign in page
+      toast.success("You are already logged in.");
+      router.push("/");
+    }
+  }, [session, router]);
+
   return (
     <Tabs
       defaultValue="login"

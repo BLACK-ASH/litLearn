@@ -15,5 +15,3 @@ export default function formatDateTime(dateString: string): string {
 
   return `${formattedDate}, ${formattedTime}`;
 }
-
-

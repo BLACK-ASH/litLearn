@@ -27,22 +27,18 @@ export const { useSession } = authClient;
 
 // Check if the user has permission to update a blog
 export const hasPermissionToUpdateBlog = async () => {
-
   return await authClient.admin.hasPermission({
     permissions: {
       blog: ["update"],
     },
   });
-
-}
+};
 
 // Check if the user has permission to delete a blog
 export const hasPermissionToDeleteBlog = async () => {
-
   return await authClient.admin.hasPermission({
     permissions: {
       blog: ["delete"],
     },
   });
-
-}
+};

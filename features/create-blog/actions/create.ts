@@ -13,7 +13,9 @@ interface Result {
   message: string;
 }
 
-export const createBlog = async (data: BlogFormData): Promise<Result | undefined> => {
+export const createBlog = async (
+  data: BlogFormData,
+): Promise<Result | undefined> => {
   try {
     await connectDB();
 
@@ -24,7 +26,8 @@ export const createBlog = async (data: BlogFormData): Promise<Result | undefined
     const sanitizedDescription = await sanitizeHTML(data.description);
     const sanitizedContent = await sanitizeHTML(data.content);
     const sanitizedCategory = await sanitizeHTML(data.category || "General");
-    const sanitizedTags = data.tags?.map(tag => tag.trim().toLowerCase()) || [];
+    const sanitizedTags =
+      data.tags?.map((tag) => tag.trim().toLowerCase()) || [];
 
     const blog = await Blog.create({
       title: sanitizedTitle,

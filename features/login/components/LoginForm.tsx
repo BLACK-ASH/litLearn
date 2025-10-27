@@ -48,7 +48,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
 
   async function onSubmit(data: FormData) {
-    await emailAndPasswordSignIn(data.email, data.password,router);
+    await emailAndPasswordSignIn(data.email, data.password, router);
     router.refresh();
   }
 
@@ -109,7 +109,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
                 <Button disabled={form.formState.isSubmitting} type="submit">
                   Login
                 </Button>
-                <Separator className="my-4"/>
+                <Separator className="my-4" />
                 <Button
                   variant="outline"
                   type="button"

@@ -2,7 +2,7 @@ import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { nextCookies } from "better-auth/next-js";
-import { admin as adminPlugin } from "better-auth/plugins"
+import { admin as adminPlugin } from "better-auth/plugins";
 import { ac, admin, editor, user } from "./permission";
 import { sendEmailVerificationMail } from "../Mailer/send-email-verification-mail";
 
@@ -12,17 +12,18 @@ const db = client.db();
 export const auth = betterAuth({
   database: mongodbAdapter(db, {
     // Optional: if you don't provide a client, database transactions won't be enabled.
-    client
+    client,
   }),
-  plugins: [nextCookies(),
-  adminPlugin({
-    ac,
-    roles: {
-      admin,
-      editor,
-      user,
-    }
-  }),
+  plugins: [
+    nextCookies(),
+    adminPlugin({
+      ac,
+      roles: {
+        admin,
+        editor,
+        user,
+      },
+    }),
   ],
 
   emailAndPassword: {
@@ -33,7 +34,6 @@ export const auth = betterAuth({
     sendVerificationEmail: async ({ user, url, token }, request) => {
       await sendEmailVerificationMail({ user, url, token });
     },
-    
   },
   socialProviders: {
     google: {
@@ -55,5 +55,5 @@ export const auth = betterAuth({
     cookieCache: {
       maxAge: 60 * 60 * 1, // 1 hour
     },
-  }
+  },
 });

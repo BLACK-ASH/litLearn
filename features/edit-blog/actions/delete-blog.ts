@@ -6,19 +6,21 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/Auth/auth"; // 👈 from your Better Auth config
 import { headers } from "next/headers";
 
-
 interface Result {
   status: "success" | "error";
   slug: string | undefined;
   message: string;
 }
 
-export const deleteBlog = async (slug: string,authorId: string): Promise<Result | undefined> => {
+export const deleteBlog = async (
+  slug: string,
+  authorId: string,
+): Promise<Result | undefined> => {
   try {
     // ✅ Get the current session
     const session = await auth.api.getSession({
-      headers: await headers() // you need to pass the headers object.
-    })
+      headers: await headers(), // you need to pass the headers object.
+    });
     if (!session?.user) {
       return {
         status: "error",
@@ -37,9 +39,7 @@ export const deleteBlog = async (slug: string,authorId: string): Promise<Result 
       },
     });
 
-    if (permissionCheck.success || session.user.id === authorId)  {
-
-
+    if (permissionCheck.success || session.user.id === authorId) {
       // ✅ Proceed with DB deletion
       await connectDB();
 
@@ -61,7 +61,6 @@ export const deleteBlog = async (slug: string,authorId: string): Promise<Result 
         slug: blog.slug,
         message: "Blog deleted successfully.",
       };
-
     }
 
     return {

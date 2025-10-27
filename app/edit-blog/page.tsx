@@ -14,7 +14,10 @@ const page = async ({ searchParams }: { searchParams: { slug: string } }) => {
           Edit Your Own Blog
         </h1>
         <div className="absolute -top-1 right-0">
-          <DeleteBlogButton authorId={blog.author.id.toString()} slug={blog.slug} />
+          <DeleteBlogButton
+            authorId={blog.author.id.toString()}
+            slug={blog.slug}
+          />
         </div>
       </div>
       <EditBlogForm blog={blog} />

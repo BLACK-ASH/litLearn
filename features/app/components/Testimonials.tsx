@@ -55,11 +55,12 @@ const Testimonials = () => {
 
     const testimonialTimeline = gsap.timeline();
 
-    const testimonialCards = gsap.utils.toArray<HTMLDivElement>(".testimonial-card");
- 
+    const testimonialCards =
+      gsap.utils.toArray<HTMLDivElement>(".testimonial-card");
+
     testimonialTimeline.from(testimonialCards, {
       scrollTrigger: {
-        trigger:testimonialCards[0],
+        trigger: testimonialCards[0],
         start: "top bottom",
         scrub: true,
       },
@@ -79,10 +80,11 @@ const Testimonials = () => {
   return (
     <section id="testimonials" className="w-full box-border scroll-mt-28 p-2">
       <h2 className="testimonial-title scroll-m-20 text-center my-4 pb-2 text-3xl md:text-5xl font-semibold tracking-tight first:mt-0">
-       What Our Users Say
+        What Our Users Say
       </h2>
-       <h4 className="scroll-m-20 text-center my-4 pb-2 md:text-xl font-semibold tracking-tight first:mt-0">
-       Hear from students, teachers, and aspirants who’ve benefited from our resources.
+      <h4 className="scroll-m-20 text-center my-4 pb-2 md:text-xl font-semibold tracking-tight first:mt-0">
+        Hear from students, teachers, and aspirants who’ve benefited from our
+        resources.
       </h4>
       <div className="flex flex-col gap-2">
         {dummyTestimonials.map((testimonial: TestimonialsProps, i) => (

@@ -27,7 +27,11 @@ const BlogSearchBar = () => {
   };
 
   return (
-    <form onKeyDown={(e) => e.key === "Enter" && handleSearch(e)} className="w-full my-4 p-2 md:w-3/5 " onSubmit={handleSearch}>
+    <form
+      onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
+      className="w-full my-4 p-2 md:w-3/5 "
+      onSubmit={handleSearch}
+    >
       <InputGroup className="border-primary">
         <InputGroupInput
           onChange={(e) => {

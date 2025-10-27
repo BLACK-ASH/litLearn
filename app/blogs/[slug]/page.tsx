@@ -36,8 +36,6 @@ export async function generateMetadata({
   };
 }
 
-// export const revalidate = 604800; // revalidate per week
-
 const page = async ({ params }: { params: { slug: string } }) => {
   const { slug } = await params;
   const blogData: BlogData | null = await getBlogBySlug(slug);

@@ -94,49 +94,46 @@ export default function EditBlogForm({ blog }: { blog: BlogData }) {
   };
   const { data: session, isPending } = authClient.useSession();
 
- useEffect(() => {
-  if (!session && !isPending) {
-    toast.error("You must be logged in to edit a blog.");
-    router.push("/login");
-    return;
-  }
+  useEffect(() => {
+    if (!session && !isPending) {
+      toast.error("You must be logged in to edit a blog.");
+      router.push("/login");
+      return;
+    }
 
-  if (!blog) {
-    toast.error("Blog not found.");
-    router.push("/blogs");
-    return;
-  }
+    if (!blog) {
+      toast.error("Blog not found.");
+      router.push("/blogs");
+      return;
+    }
 
-  const checkPermission = async () => {
-    try {
-      // ✅ Check if user has update permission
-      const hasPermission = await hasPermissionToUpdateBlog().then(
-        (res) => res.data?.success
-      );
+    const checkPermission = async () => {
+      try {
+        // ✅ Check if user has update permission
+        const hasPermission = await hasPermissionToUpdateBlog().then(
+          (res) => res.data?.success,
+        );
 
-      // ✅ Allow access if:
-      // 1️⃣ The user is the author OR
-      // 2️⃣ The user has explicit "update" permission
-      if (
-        session?.user?.id === blog.author.id.toString() ||
-        hasPermission
-      ) {
-        return true;
-      } else {
-        toast.error("You don't have permission to edit this blog.");
+        // ✅ Allow access if:
+        // 1️⃣ The user is the author OR
+        // 2️⃣ The user has explicit "update" permission
+        if (session?.user?.id === blog.author.id.toString() || hasPermission) {
+          return true;
+        } else {
+          toast.error("You don't have permission to edit this blog.");
+          router.push("/blogs");
+        }
+      } catch (err) {
+        console.error("Permission check failed:", err);
+        toast.error("Failed to check permission.");
         router.push("/blogs");
       }
-    } catch (err) {
-      console.error("Permission check failed:", err);
-      toast.error("Failed to check permission.");
-      router.push("/blogs");
-    }
-  };
+    };
 
-  if (!isPending && session) {
-    checkPermission();
-  }
-}, [session, router, blog, isPending]);
+    if (!isPending && session) {
+      checkPermission();
+    }
+  }, [session, router, blog, isPending]);
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

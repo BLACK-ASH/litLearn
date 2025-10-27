@@ -1,7 +1,5 @@
 const BlogContentViewer = () => {
-  return (
-    <div>BlogContentViewer</div>
-  )
-}
+  return <div>BlogContentViewer</div>;
+};
 
-export default BlogContentViewer
+export default BlogContentViewer;

@@ -52,7 +52,6 @@ const FadeBackground = ({ children }: React.PropsWithChildren) => {
             WebkitMaskComposite: "source-in",
           }}
         />
-       
 
         {/* Your Content/Components */}
         <div className="">{children}</div>

@@ -467,10 +467,7 @@ export default function BlogEditorMenuBar({ editor }: { editor: Editor }) {
       {/* Link */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-          >
+          <Button variant="ghost" size="sm">
             <Link2Icon className="w-4 h-4" />
           </Button>
         </PopoverTrigger>

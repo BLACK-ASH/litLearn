@@ -1,10 +1,10 @@
 import type { User } from "../Auth/auth-client";
 import { sendMail } from "./send-mail";
 
-type UserMail = Partial<User>
+type UserMail = Partial<User>;
 
 const generateHtml = async (user: UserMail, url: string, token: string) => {
-  return (`
+  return `
 <!doctype html>
 <html lang="en">
 <head>
@@ -153,14 +153,21 @@ const generateHtml = async (user: UserMail, url: string, token: string) => {
   </table>
 </body>
 </html>
-`);
+`;
 };
 
-
-export const sendEmailVerificationMail = async ({ user, url, token }: { user: UserMail, url: string, token: string }) => {
+export const sendEmailVerificationMail = async ({
+  user,
+  url,
+  token,
+}: {
+  user: UserMail;
+  url: string;
+  token: string;
+}) => {
   await sendMail({
     to: user.email as string,
     subject: "Verify your LitLearn account",
     html: await generateHtml(user, url, token),
   });
-}
+};

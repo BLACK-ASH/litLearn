@@ -16,7 +16,7 @@ interface Result {
 }
 
 export const updateBlog = async (
-  data: EditBlogFormData
+  data: EditBlogFormData,
 ): Promise<Result | undefined> => {
   try {
     // ✅ Get current session
@@ -71,11 +71,15 @@ export const updateBlog = async (
         content: sanitizedContent,
         description: sanitizedDescription,
         coverImage: data.coverImage,
-        author: { name: data.author.name, id, image: data?.author.image ?? undefined },
+        author: {
+          name: data.author.name,
+          id,
+          image: data?.author.image ?? undefined,
+        },
         tags: sanitizedTags,
         category: sanitizedCategory,
       },
-      { new: true }
+      { new: true },
     );
 
     if (!blog) {

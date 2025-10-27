@@ -10,7 +10,7 @@ import {
   CardAction,
 } from "@/components/ui/card";
 import { BlogData } from "@/lib/Database/Models/blog.model";
-import {  EyeIcon} from "lucide-react";
+import { EyeIcon } from "lucide-react";
 import Link from "next/link";
 
 const BlogCard = ({ blog }: { blog: BlogData }) => {
@@ -22,7 +22,7 @@ const BlogCard = ({ blog }: { blog: BlogData }) => {
       >
         <AspectRatio ratio={16 / 9}>
           {/** biome-ignore lint/performance/noImgElement: <explanation> */}
-<img
+          <img
             src={blog.coverImage || "/default-fallback-image.png"}
             alt={blog.title}
             className="object-cover w-full h-full"

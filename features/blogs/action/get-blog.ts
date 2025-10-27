@@ -1,25 +1,34 @@
-"use server"
+"use server";
 
 import connectDB from "@/lib/Database/connection";
 import Blog, { type BlogData } from "@/lib/Database/Models/blog.model";
 import { cacheTag } from "next/cache";
 import { cache } from "react";
 
-export const getBlogViews = cache(async (slug: string): Promise<number | null> => {
-  try {
-    await connectDB();
-    const blog: BlogData | null = await Blog.findOneAndUpdate({ slug }, { $inc: { views: 1 } }, { timestamps: false });
-    if (!blog) return null;
-    return blog.views;
-  } catch (error) {
-    console.error("Error increasing blog views:", error);
-    return null;
-  }
-});
-
+export const getBlogViews = cache(
+  async (slug: string): Promise<number | null> => {
+    try {
+      await connectDB();
+      const blog: BlogData | null = await Blog.findOneAndUpdate(
+        { slug },
+        { $inc: { views: 1 } },
+        { timestamps: false },
+      );
+      if (!blog) return null;
+      return blog.views;
+    } catch (error) {
+      console.error("Error increasing blog views:", error);
+      return null;
+    }
+  },
+);
 
 export const getAllBlogs = cache(
-  async (slug?: string, page = 1, limit = 10): Promise<{ data: BlogData[]; total: number }> => {
+  async (
+    slug?: string,
+    page = 1,
+    limit = 10,
+  ): Promise<{ data: BlogData[]; total: number }> => {
     try {
       await connectDB();
 
@@ -44,20 +53,21 @@ export const getAllBlogs = cache(
       console.error("Error fetching blogs:", error);
       return { data: [], total: 0 };
     }
-  }
+  },
 );
 
-
-export const getBlogBySlug = cache(async (slug: string): Promise<BlogData | null> => {
-  "use cache"
-  cacheTag(slug);
-  try {
-    await connectDB();
-    const blog = await Blog.findOne({ slug }).lean() as BlogData | null;
-    if (!blog) return null;
-    return JSON.parse(JSON.stringify(blog));
-  } catch (error) {
-    console.error("Error fetching blog by slug:", error);
-    return null;
-  }
-})
+export const getBlogBySlug = cache(
+  async (slug: string): Promise<BlogData | null> => {
+    "use cache";
+    cacheTag(slug);
+    try {
+      await connectDB();
+      const blog = (await Blog.findOne({ slug }).lean()) as BlogData | null;
+      if (!blog) return null;
+      return JSON.parse(JSON.stringify(blog));
+    } catch (error) {
+      console.error("Error fetching blog by slug:", error);
+      return null;
+    }
+  },
+);
