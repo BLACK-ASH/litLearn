@@ -8,8 +8,10 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
+import { Separator } from "@/components/ui/separator";
 
 import { getBlogBySlug, getBlogViews } from "@/features/blogs/action/get-blog";
+import { BlogComments } from "@/features/blogs/components/BlogComments";
 import BlogContent from "@/features/blogs/components/BlogContent";
 import UpdateBlogButton from "@/features/blogs/components/UpdateBlogButton";
 import formatDateTime from "@/features/blogs/utility/format-date";
@@ -130,6 +132,13 @@ const page = async ({ params }: { params: { slug: string } }) => {
       <p className="text-muted-foreground my-4">{blogData?.description}</p>
 
       <BlogContent html={blogData?.content} />
+      <Separator className="bg-primary my-12 h-[2px] max-w-2/3 mx-auto" />
+      <Suspense fallback={<p>Loading comments...</p>}>
+        <BlogComments
+          slug={blogData?.slug}
+          id={(blogData?._id as string).toString()}
+        />
+      </Suspense>
     </main>
   );
 };

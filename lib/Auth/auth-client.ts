@@ -42,3 +42,11 @@ export const hasPermissionToDeleteBlog = async () => {
     },
   });
 };
+
+export const hasPermissionToDeleteComment = async () => {
+  return await authClient.admin.hasPermission({
+    permissions: {
+      comment: ["delete"],
+    },
+  });
+};
