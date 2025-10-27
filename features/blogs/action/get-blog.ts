@@ -2,26 +2,20 @@
 
 import connectDB from "@/lib/Database/connection";
 import Blog, { type BlogData } from "@/lib/Database/Models/blog.model";
+import { cacheTag } from "next/cache";
 import { cache } from "react";
 
-const increaseViews = async (slug: string): Promise<boolean> => {
+export const getBlogViews = cache(async (slug: string): Promise<number | null> => {
   try {
     await connectDB();
-
-    const blog: BlogData | null = await Blog.findOne({ slug });
-    if (!blog) return false;
-
-    blog.views++;
-
-    // Save without updating the 'updatedAt' field
-    await blog.save({ timestamps: false });
-
-    return true;
+    const blog: BlogData | null = await Blog.findOneAndUpdate({ slug }, { $inc: { views: 1 } }, { timestamps: false });
+    if (!blog) return null;
+    return blog.views;
   } catch (error) {
     console.error("Error increasing blog views:", error);
-    return false;
+    return null;
   }
-};
+});
 
 
 export const getAllBlogs = cache(
@@ -55,9 +49,10 @@ export const getAllBlogs = cache(
 
 
 export const getBlogBySlug = cache(async (slug: string): Promise<BlogData | null> => {
+  "use cache"
+  cacheTag(slug);
   try {
     await connectDB();
-    await increaseViews(slug);
     const blog = await Blog.findOne({ slug }).lean() as BlogData | null;
     if (!blog) return null;
     return JSON.parse(JSON.stringify(blog));

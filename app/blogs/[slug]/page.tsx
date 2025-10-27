@@ -9,13 +9,14 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 
-import { getBlogBySlug } from "@/features/blogs/action/get-blog";
+import { getBlogBySlug, getBlogViews } from "@/features/blogs/action/get-blog";
 import BlogContent from "@/features/blogs/components/BlogContent";
 import UpdateBlogButton from "@/features/blogs/components/UpdateBlogButton";
 import formatDateTime from "@/features/blogs/utility/format-date";
 import type { BlogData } from "@/lib/Database/Models/blog.model";
 import { HomeIcon, User as UserIcon } from "lucide-react";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 export async function generateMetadata({
   params,
@@ -40,6 +41,7 @@ export async function generateMetadata({
 const page = async ({ params }: { params: { slug: string } }) => {
   const { slug } = await params;
   const blogData: BlogData | null = await getBlogBySlug(slug);
+  const blogViews = await getBlogViews(slug);
 
   if (!blogData) return notFound();
 
@@ -105,7 +107,9 @@ const page = async ({ params }: { params: { slug: string } }) => {
         </div>
       </div>
 
-      <p>Total views: {blogData?.views}</p>
+      <Suspense fallback={<p>Loading views...</p>}>
+        <p>Total views: {blogViews || blogData?.views}</p>
+      </Suspense>
 
       {formatDateTime(blogData?.createdAt) !==
         formatDateTime(blogData?.updatedAt) && (

@@ -4,7 +4,7 @@ import { sanitizeHTML } from "@/features/create-blog/actions/sanitizeHtml";
 import connectDB from "@/lib/Database/connection";
 import Blog from "@/lib/Database/Models/blog.model";
 import mongoose from "mongoose";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import type { EditBlogFormData } from "../components/EditBlogForm";
 import { auth } from "@/lib/Auth/auth";
 import { headers } from "next/headers";
@@ -89,6 +89,9 @@ export const updateBlog = async (
     // ✅ Revalidate cache paths
     revalidatePath("/blogs");
     revalidatePath(`/blogs/${blog.slug}`);
+
+    // Revalidate cache
+    updateTag(blog.slug);
 
     return {
       status: "success",

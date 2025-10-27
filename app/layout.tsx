@@ -6,6 +6,7 @@ import Navbar from "@/features/app/components/Navbar";
 import Footer from "@/features/app/components/Footer";
 import { Toaster } from "sonner";
 import NoiseBackground from "@/components/FadeBackground";
+import { Suspense } from "react";
 
 const baloo = Baloo_2({
   weight: "400",
@@ -31,7 +32,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
+          <Suspense fallback={null}>
+            <Navbar />
+          </Suspense>
           <NoiseBackground>
             <main className="py-12">{children}</main>
           </NoiseBackground>

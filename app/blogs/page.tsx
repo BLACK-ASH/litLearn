@@ -19,7 +19,7 @@ export const metadata = {
   description: "Blogs",
 };
 
-export const revalidate = 3600; // revalidate every hour
+// export const revalidate = 3600; // revalidate every hour
 const page = async ({
   searchParams,
 }: {
