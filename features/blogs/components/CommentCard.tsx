@@ -17,7 +17,13 @@ import { canDeleteComment, deleteComment } from "../action/comment";
 import { authClient } from "@/lib/Auth/auth-client";
 import { toast } from "sonner";
 
-export function CommentCard({ comment ,slug}: { comment: CommentDataType,slug: string }) {
+export function CommentCard({
+  comment,
+  slug,
+}: {
+  comment: CommentDataType;
+  slug: string;
+}) {
   const [hasPermission, setHasPermission] = useState(false);
 
   useEffect(() => {
@@ -41,7 +47,12 @@ export function CommentCard({ comment ,slug}: { comment: CommentDataType,slug: s
   }, [comment._id]);
 
   const handleDeleteComment = async () => {
-    const res = await deleteComment(comment._id as unknown as string, comment.user.id, comment.blog as unknown as string,slug);
+    const res = await deleteComment(
+      comment._id as unknown as string,
+      comment.user.id,
+      comment.blog as unknown as string,
+      slug,
+    );
     if (res.status === "success") {
       toast.success(res.message);
     } else {
@@ -67,7 +78,12 @@ export function CommentCard({ comment ,slug}: { comment: CommentDataType,slug: s
       </ItemContent>
       {hasPermission && (
         <ItemActions>
-          <Button onClick={()=> handleDeleteComment()} size="icon-sm" variant="ghost" aria-label="Edit Comment">
+          <Button
+            onClick={() => handleDeleteComment()}
+            size="icon-sm"
+            variant="ghost"
+            aria-label="Edit Comment"
+          >
             <Trash2 className="size-4 text-destructive" />
           </Button>
         </ItemActions>

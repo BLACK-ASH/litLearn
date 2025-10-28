@@ -121,7 +121,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
       {/** biome-ignore lint/performance/noImgElement: <explanation> */}
       <img
         src={blogData?.coverImage || "/default-fallback-image.png"}
-        alt={blogData?.title}
+        alt={blogData?.title || "Blog Cover Image"}
         className="object-cover lg:w-[70%] h-full mx-auto rounded-md"
         sizes="auto, (max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"
         loading="lazy"

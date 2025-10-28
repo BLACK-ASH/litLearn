@@ -17,9 +17,11 @@ const BlogCard = ({ blog }: { blog: BlogData }) => {
   return (
     <Card className="grid grid-rows-[auto_auto_1fr_auto] pt-0 overflow-clip">
       <Link
+        aria-label="read-more"
         href={`/blogs/${blog.slug}`}
         className="fade-in transition-opacity duration-200 hover:opacity-70"
       >
+        <span className="sr-only">click here to read more</span>
         <AspectRatio ratio={16 / 9}>
           {/** biome-ignore lint/performance/noImgElement: <explanation> */}
           <img
@@ -38,17 +40,22 @@ const BlogCard = ({ blog }: { blog: BlogData }) => {
           </Badge>
         </CardAction>
         <Link
+          aria-label="read-more"
           href={`/blogs/${blog.slug}`}
           className="fade-in transition-opacity duration-200 hover:opacity-70"
         >
+          <span className="sr-only">click here to read more</span>
           <CardTitle>{blog.title}</CardTitle>
           <CardDescription>{blog.description}</CardDescription>
         </Link>
       </CardHeader>
 
       <CardFooter className="flex gap-2 justify-between">
-        <Button variant={"link"} asChild>
-          <Link href={`/blogs/${blog.slug}`}>Read more</Link>
+        <Button aria-label="read-more" variant={"link"} asChild>
+          <span className="sr-only">click here to read more</span>
+          <Link aria-label="read-more" href={`/blogs/${blog.slug}`}>
+            Read more
+          </Link>
         </Button>
 
         {blog?.author.name}

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { authClient, User } from "@/lib/Auth/auth-client";
+import { authClient } from "@/lib/Auth/auth-client";
 import { useRef } from "react";
 import { toast } from "sonner";
 import { postComment } from "../action/comment";
@@ -46,14 +46,22 @@ const CommentForm = ({ blogId, slug }: { blogId: string; slug: string }) => {
   };
 
   return (
-    <form onSubmit={handleSubmitComment} className="grid w-full gap-3">
+    <form
+      aria-label="comment"
+      onSubmit={handleSubmitComment}
+      className="grid w-full gap-3"
+    >
       <Label htmlFor="message-2">Enter Your Comment</Label>
       <Textarea
         ref={commentRef}
         placeholder="Type your message here."
         id="message-2"
       />
-      <Button type="submit" className="w-1/2 md:w-40">
+      <Button
+        aria-label="submit-comment"
+        type="submit"
+        className="w-1/2 md:w-40"
+      >
         comment
       </Button>
     </form>
