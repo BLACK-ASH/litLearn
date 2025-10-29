@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  authClient,
   hasPermissionToUpdateBlog,
   useSession,
 } from "@/lib/Auth/auth-client";

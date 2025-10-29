@@ -52,8 +52,8 @@ const BlogCard = ({ blog }: { blog: BlogData }) => {
 
       <CardFooter className="flex gap-2 justify-between">
         <Button aria-label="read-more" variant={"link"} asChild>
-          <span className="sr-only">click here to read more</span>
           <Link aria-label="read-more" href={`/blogs/${blog.slug}`}>
+          <span className="sr-only">click here to read more</span>
             Read more
           </Link>
         </Button>
